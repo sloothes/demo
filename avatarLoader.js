@@ -82,7 +82,7 @@
 
         return localPlayer.outfit.fromJSON( json );
 
-    ).then(function(outfit){
+    }).then(function(outfit){
         if (!outfit) throw "Null outfit object!";
 
         if ( localPlayer.outfit.getGender("male") )
