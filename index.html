@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="description" contents="Slutty Ladies Observing Outgoing Trying Have Expressive Sex">
+
+    <title>demo scene (scc v4.0)</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootbox-dialoges.css">
+    <link rel="stylesheet" href="/css/jquery.Jcrop.css">
+    <link rel="stylesheet" href="/css/joystick.css">
+    <link rel="stylesheet" href="/css/meter.css">
+
+    <script src="/js/loadjs.min.js"></script>
+    <script src="/socketcluster.js"></script>
+    <script src="/sc-codec-min-bin.js"></script>
+
+    <script>
+
+        debugMode = true;
+
+        console.log({
+            "debug": debugMode,
+            "scc-version": socketCluster.version,
+            "scc-clients": socketCluster.clients,
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+<style>
+
+    body {
+        background-color: #b1c8e8;
+        margin: 0px;
+        overflow: hidden;
+    }
+
+    #scene-container {
+        height:100vh;
+    }
+
+    .middle > * {
+        margin:auto;
+        position:absolute;
+        top:0; bottom:0;
+        left:0; right:0;
+        height:fit-content;
+        width:fit-content;
+    }
+
+    #crop-button {
+        position:absolute;
+        bottom: 0px;
+        right: 0px;
+    }
+
+    #exit-button {
+        position:absolute;
+        bottom: 0px;
+        left: 0px;
+    }
+
+</style>
+
+<div id="scene-container"></div>
+<div class="joystick-controls" id="joystick-controls-1"></div>
+<div class="joystick-controls" id="joystick-controls-2"></div>
+
+<script src="/js/w3.js"></script>
+<script src="/js/rawinflate.js"></script>
+<script src="/js/rawdeflate.js"></script>
+<script src="/js/store2.js"></script>
+<script src="/js/Objectid.js"></script>
+<script src="/js/zangodb.min.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script src="/js/jquery.Jcrop.js"></script>
+<script src="/js/bootbox.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/DeviceDetector.js"></script>
+<script src="/js/MathDecimalAdjustment.js"></script>
+<script src="/js/watermark.js"></script>
+<script src="/js/validator.js"></script>
+<script src="/js/system.min.js"></script>
+<script src="/js/signals.min.js"></script>
+<script src="/js/command.js"></script>
+<script src="/js/AW3D.db.js"></script>
+<script src="/three/three.js"></script>
+<script src="/three/EditorControls.js"></script>
+<script src="/three/Detector.js"></script>
+<script src="/three/Projector.js"></script>
+<script src="/three/Animation.js"></script>
+<script src="/three/AnimationHandler.js"></script>
+<script src="/three/KeyFrameAnimation.js"></script>
+<script src="/three/SubdivisionModifier.js"></script>
+<script src="/three/UVsDebug.js"></script>
+<script src="/three/shader.js"></script>
+<script src="/js/MW.js"></script>
+<script src="/js/MWtps.js"></script>
+<script src="/js/VirtualInput.js"></script>
+<script src="/js/scene-helpers.js"></script>
+<script src="/js/edges-helpers.js"></script>
+<script src="/scene/index.js"></script>
+<script src="/scene/world.js"></script>
+<script src="/AW3D/AW3D-dev0.3.9.js"></script>
+<script src="/js/PlayerController.js"></script>
+<script src="/js/cameraControl.js"></script>
+<script src="/js/KeyInputControls.js"></script>
+<script src="/js/JoystickControls.js"></script>
+<script src="/js/jquery-update-engine.js"></script>
+<script src="/js/jquery-render-engine.js"></script>
+<script src="/scene/runtime.js"></script>
+<script src="/js/animationsLoader.js"></script>
+<script src="/scene/action-helpers.js"></script>
+<script src="/scene/sceneHandler.js"></script>
+<script src="/scene/localPlayerHandler.js"></script>
+<script src="/demo/avatarLoader.js"></script>
+
+
+<script>
+
+(function(){
+
+//  Loading bar.
+
+    var dialog = window.bootbox.dialog({
+        message: `<div class="text-center meter orange">`
+        + `<span style="width:300px;">Loading...</span></div>`,
+        buttons: false,
+        closeButton: false,
+        className: "middle",
+    });
+
+//    dialog.init(function(){
+//        $( dialog.modal() ).find(".modal-body").css({"width":300});
+//    });
+
+})();
+
+</script>
+
+<script>
+
+//  Socketcluster.
+
+    var socket = socketCluster.create({
+    //  port:443,
+        hostname: "anywhere3d.com",
+        codecEngine: scCodecMinBin,
+    });
+
+    socket.on("connect", function(status){
+        debugMode && console.log({"scene socket status": status});
+
+        var channel_ID = "/channel:" + socket.id;
+
+    //  Create a channel for this scene.
+        sceneChannel = socket.subscribe(`/scene/channel:${socket.id}`);
+        sceneChannel.watch( sceneHandler );
+        debugMode && console.log({"sceneChannel": sceneChannel});
+
+    //  Create a channel for localPlayer.
+        playerChannel = socket.subscribe(`/player/channel:${socket.id}`);
+        playerChannel.watch( localPlayerHandler );
+        debugMode && console.log({"playerChannel": playerChannel});
+
+    //  Create a channel for outfit costumizing.
+        outfitChannel = socket.subscribe(`/player/outfit/channel:${socket.id}`);
+        outfitChannel.watch( localPlayerOutfitHandler );
+        debugMode && console.log({"outfitChannel": outfitChannel});
+
+    //  Create a channel for outfit materializing.
+        materialChannel = socket.subscribe(`/player/outfit/material/channel:${socket.id}`);
+        materialChannel.watch( localPlayerApplyMaterial ); // --> localPlayerMaterialHandler.
+        debugMode && console.log({"materialChannel": materialChannel});
+
+    //  Parse to parent window dynamically as global properties.
+
+        if ( window.parent != window ) {
+            window.parent.localSceneSocket_ID = socket.id;
+            window.parent.localSceneChannel_ID = channel_ID;
+            window.parent.localSceneChannel = sceneChannel.name;
+            window.parent.localPlayerChannel = playerChannel.name;
+            window.parent.localPlayerOutfitChannel = outfitChannel.name;
+            window.parent.localPlayerMaterialChannel = materialChannel.name;
+        }
+
+    });
+
+    socket.on("error", function (err) {
+        console.error( err.stack );
+    });
+
+    socket.on("authStateChange", function( state ){
+        debugMode && console.log({"scene authStateChange": state});
+    });
+
+    socket.on("subscribe", function( name, object ){
+        debugMode && console.log(`subscribed successfully to "${name}" channel:`, object);
+    });
+
+</script>
+
+
+</body>
+</html>
