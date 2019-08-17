@@ -10,7 +10,7 @@
 
     Promise.resolve( store("Avatar") ).then(function(json){
 
-        if (!json) throw "Null json data!";
+        if (!json) throw "Null avatar data!";
 
     //  avatar.
 
@@ -18,7 +18,7 @@
 
     }).then(function(outfit){
 
-        if (!outfit) throw "Null outfit object!";
+        if (!outfit) throw "Null avatar outfit!";
 
         if ( localPlayer.outfit.getGender("male") )
             male = outfit;
