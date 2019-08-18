@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="description" contents="Slutty Ladies Observing Outgoing Trying Have Expressive Sex">
+
+    <title>sketchbook demo (v0.1)</title>
+
+    <script>debugMode = true;</script>
+
+</head>
+
+<body>
+
+
+<script src="/sketchbook/build/three.min.js"></script>
+<script src="/sketchbook/build/cannon.min.js"></script> <!-- Only use provided build, official package is extremely outdated! -->
+<script src="/sketchbook/build/sketchbook.min.js"></script>
+
+<script>
+(function(){
+
+    var world = new Sketchbook.World();
+
+    var player = new Sketchbook.Character({
+        position: new THREE.Vector3(1.13, 3, -2.2),
+    });
+
+    LoadCharacterModel(player);
+
+    world.add(player);
+    player.takeControl();
+
+})();
+</script>
+
+</body>
+</html>
