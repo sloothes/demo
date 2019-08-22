@@ -1,0 +1,964 @@
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="keywords" content="google, web, space, search, funny, easy, fast, anywhere, 3D" />
+        <meta http-equiv="description" content="google, web, space, search, funny, easy, fast, anywhere, 3D" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Google Search WebSpace</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <style>
+            * { box-sizing:border-box; -moz-box-sizing:border-box; margin:0px; padding:0px;}
+            html, body {width: 100%; height: 100%;}
+            html { color:#000; font-size:13px; background-color:#eee; margin:0px; overflow:hidden; }
+            body { background-color: #ffffff; margin:0; padding:0px; overflow:hidden; font-family:arial, san-serif; }
+            #render-container {
+                position:absolute; top:0px; left:0px; bottom:0px; right:0px; width:100%; padding:0px;
+                margin:0px; border:none; display:block; background-color: #dedede; overflow:hidden;
+            }
+            #cam-measure-panel {
+                width:auto; height:auto; position:absolute; left:10px; top:50px; 
+                padding-top:10px; padding-bottom:10px; padding-left:10px; padding-right:10px; 
+                background-color:rgba(0,0,0, 0.5); color:#fff; text-align:left; font-size:1em;
+                border:4px solid #ffffff; border-radius:12px; display:none;
+            }
+            #pegman-result-bar {
+                position:absolute; max-width:70%; bottom:0px; left:0px; max-height:30%;
+                margin:0px; padding:5px 15px 15px 15px; background-color: rgba(0,0,0,0.2); color:#ffffff;
+                border-radius:0px 9px 0px 0px; overflow:auto; display:block;
+            }
+            #pauser {
+                position:absolute; bottom:50%; left:20%; right:20%; 
+                padding:0px; margin:auto; line-height: 1.1em;
+                color:#ffffff; border: 0.0em solid #ffffff; border-radius:0.1em; 
+                font-size:4em; text-align:center; text-vertical-align:middle;
+                text-shadow:0.05em 0.05em 0.08em #000; opacity:0.5; 
+            }
+        </style>
+        
+        <script src="js/jquery.min.js"></script>
+        
+    </head>
+    
+    <body>
+
+        <div id="render-container" onmouseover="controls.enabled = true;" onmouseleave="controls.enabled = false;"></div>
+        <div id="pegman-result-bar"></div>  
+        <div id="pauser" style="display:none;" onclick="controls.enabled = true;"></div>
+
+        <div id="cam-measure-panel">
+            <div id="close-button" class="btn-close" onclick="hidePanel('cam-measure-panel');"></div><br>
+            <li><strong>frame:&nbsp;</strong><span id="framer">value</span></li><br>
+            <li><strong>Measurements:</strong>
+                <ul>
+                    <li>position&nbsp;x:<span id="cam-pos-x">value</span></li>
+                    <li>position&nbsp;y:<span id="cam-pos-y">value</span></li>
+                    <li>position&nbsp;z:<span id="cam-pos-z">value</span></li><br>
+                    <li>rotation&nbsp;x:<span id="cam-rot-x">value</span></li>
+                    <li>rotation&nbsp;y:<span id="cam-rot-y">value</span></li>
+                    <li>rotation&nbsp;z:<span id="cam-rot-z">value</span></li><br>
+                    <li>quaternion&nbsp;w:<span id="cam-quat-w">value</span></li>
+                    <li>quaternion&nbsp;x:<span id="cam-quat-x">value</span></li>
+                    <li>quaternion&nbsp;y:<span id="cam-quat-y">value</span></li>
+                    <li>quaternion&nbsp;z:<span id="cam-quat-z">value</span></li><br>
+                    <li>far:&nbsp;<span id="cam-far">value</span></li>
+                    <li>fov:&nbsp;<span id="cam-fov">value</span></li>
+                </ul>
+            </li><br>
+            <li><strong>Mouse Properties</strong>
+                <ul>
+                    <li>screen&nbsp;x:<span id="mouse-x">value</span></li>
+                    <li>screen&nbsp;y:<span id="mouse-y">value</span></li>
+                </ul>
+            </li>
+            <li><strong>Ray Properties</strong>
+                <ul>
+                    <li>intersects:<span id="intersects">value</span></li>
+                </ul>
+            </li>
+        </div>
+        
+    <!-- WEBGL LIBRARIES -->
+        
+        <!-- r71 - r73 -->
+        <script src="js/three.js" language="javascript" type="text/javascript"></script> 
+        <script src="js/EditorControls.js" language="javascript" type="text/javascript"></script>
+        <script src="js/Detector.js" language="javascript" type="text/javascript"></script>
+        <script src="js/Projector.js" language="javascript" type="text/javascript"></script>
+        <script src="js/KeyboardState.js" language="javascript" type="text/javascript"></script>
+
+    <!-- FONTS THREEJS -->
+
+        <script src="js/fonts/gentilis_bold.typeface.js"></script>
+        <script src="js/fonts/gentilis_regular.typeface.js"></script>
+        <script src="js/fonts/optimer_bold.typeface.js"></script>
+        <script src="js/fonts/optimer_regular.typeface.js"></script>
+        <script src="js/fonts/helvetiker_bold.typeface.js"></script>
+        <script src="js/fonts/helvetiker_regular.typeface.js"></script>
+        <script src="js/fonts/droid_sans_regular.typeface.js"></script>
+        <script src="js/fonts/droid_sans_bold.typeface.js"></script>
+        <script src="js/fonts/droid_serif_regular.typeface.js"></script>
+        <script src="js/fonts/droid_serif_bold.typeface.js"></script>
+        
+        
+    <!-- GLOBAL FUNCTIONS -->
+        
+        <script>
+            
+            window.debugMode = true;
+            
+            rightSidePinBtn = $("#right-side-pinbtn")[0];
+            leftSidePinBtn = $("#left-side-pinbtn")[0];
+            introPinBtn = $("#pinbtn")[0];
+            
+            if (!!rightSidePinBtn) {
+                rightSidePinBtn.pinned = false;
+                rightSidePinBtn.onclick = function(){ 
+                    this.pinned = !this.pinned; 
+                    this.classList.toggle( "pinned", this.pinned );
+                	this.parentElement.classList.toggle( "pinned", this.pinned );
+                };
+            }
+            
+            if (!!leftSidePinBtn) {
+                leftSidePinBtn.pinned = false;
+                leftSidePinBtn.onclick = function(){ 
+                    this.pinned = !this.pinned; 
+                    this.classList.toggle( "pinned", this.pinned );
+                	this.parentElement.classList.toggle( "pinned", this.pinned );
+                };
+            }
+            
+            if (!!introPinBtn) {
+                rightSidePinBtn.pinned = false;
+                introPinBtn.onclick = function(){ 
+                    rightSidePinBtn.pinned = !rightSidePinBtn.pinned; 
+                    rightSidePinBtn.classList.toggle( "pinned", rightSidePinBtn.pinned );
+                	rightSidePinBtn.parentElement.classList.toggle( "pinned", rightSidePinBtn.pinned );
+                };
+            }
+            
+            function focusDomElement(domId){ 
+                document.getElementById(domId).focus(); 
+            }
+            
+            function crosshairCursor(domId) { 
+                document.getElementById(domId).style.cursor = "crosshair"; 
+            }
+            
+            function removeTabindex(){
+                var HtmlCollection = document.all;
+                for (var i=0; i < HtmlCollection.length; i++) {
+                    HtmlCollection[i].tabindex = -1;
+                }
+            }
+            
+            function setDisplayToNone( domId ){ 
+                document.getElementById(domId).style.display = "none"; 
+            }
+            
+            function hidePanel( domId ){
+                document.getElementById(domId).style.display = "none";
+            }
+            
+            function showPanel( domId ){
+                document.getElementById(domId).style.display = "";
+            }
+            
+        	function serialNumber(){
+            //  Time from "Sun Jul 31 2016 23:20:00 GMT+0200 
+            //    (GTB Standard Time)" in milliseconds.   //
+                return Date.now() - 1470000000000;
+            }
+            
+            function getNodeListAsArray(element, selector){
+                if ( !element ) return undefined;
+                return Array.prototype.slice.call(element.querySelectorAll(selector));
+            }
+            
+            function resultsCapacity(){
+                googleCapacity = Number(capacityinput.value);
+                debugMode && console.log("googleCapacity:", googleCapacity);
+            }
+            
+        </script>
+        
+    <!-- SCENE -->
+        
+        <script>
+
+            if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+        
+            frameCount = 0;
+            mesh = undefined;
+            SELECTED = undefined;
+            seaLevel = -750;
+            followUp = false;
+            var lastPegman;
+            
+            var container, camera, controls, scene, renderer;
+            near = 0;
+            far = Infinity;
+            var light0, light1, light2;
+            var armature, armatureHelper;
+            var font, h0, h1, h2, h3, h4, h5, h6;
+            var axisCustomHelper;
+            var originAxisHelper;
+            var laserLight;
+            var groundHelper;
+            var skydome;
+            keyboard = new KeyboardState();
+            clock = new THREE.Clock();
+            helpCameraActive = false;
+            var directionSphere;
+            speed = 1.9;
+            materialArray = [];
+            
+            var listener = new THREE.AudioListener();
+            var soundClick = new THREE.Audio( listener );
+            
+            var reloadText = new THREE.Mesh();
+            var reloadTextGeom;
+            var reloadTextWidth;
+            var reloadText;
+    
+            var projector;
+            var raycaster;
+            mouse = new THREE.Vector2();
+            
+            sect = 0;
+            intersects = [];
+            morphs = [];
+            skins = [];
+            pegmen = [];
+            targets = [];
+            directionRandomPoints = [];
+            
+            var animation;
+            var avatarHelper;
+            var myAvatar;
+            var shootedEnemy;
+            var othersAvatar;
+            xforward = true;
+            zforward = true;
+            
+            var skydomePath = "/skydomes/skydome000.jpg";
+            var pegmanPath = "models/human_walk_0_female.js";
+            var container = $("#render-container")[0];
+            pegmanResultbar = $("#pegman-result-bar")[0];
+            var pauser = $("#pauser")[0];
+            var innerHtml = "<p style='font-size:1em;'>PAUSED</p><p>Click to continue...</p><p style='font-size:0.5em;'>anywhere3d.com</p>";
+            
+            googleCapacity = 100;
+            googleResults = [];
+            currentIndex = 0;
+            THREE.AnimationHandler.animations = [];
+            geometry = {};
+            materials = [];
+            
+            init( container );
+            animate();
+
+            function init( container ) {
+    
+                camera = new THREE.PerspectiveCamera( 50, container.offsetWidth / container.offsetWidth, 1, 100000 );
+                camera.position.set( 200, 10, 0 );
+                camera.rotation.set( 0, 0, 0, "XYZ" );
+                camera.name = "CAMERA"
+                
+                scene = new THREE.Scene();
+                projector = new THREE.Projector();
+                controls = new THREE.EditorControls(camera);
+            
+                light0 = newDirectionalLight(0xffffff, 0, 0, 1000, 0.5);
+                light1 = newDirectionalLight(0xffffff, 1000, 0, -1000, 0.5);
+                light2 = newDirectionalLight(0xffffff, -1000, 1000, 1000, 0.25);
+                light3 = newDirectionalLight(0xffffff, 0, -1000, 0, 0.25);
+            
+            //  Laser light.
+                laserLight = new THREE.PointLight( 0x00ff44, 0.1, 10 );
+                laserLight.position.copy( camera.position );
+                laserLight.intensity = 2;
+                laserLight.name = "LASERPOINTER"
+                scene.add( laserLight );
+            /*
+                groundHelper = newGroundHelper();
+                groundHelper.visible = true;
+                axisCustomHelper = newCustomAxisHelper();
+                axisCustomHelper.visible = true;
+                originAxisHelper = newOriginAxisHelper();
+                originAxisHelper.visible = true;
+            */
+            //  Skydome.
+                skydome = new THREE.Mesh( 
+                    new THREE.SphereGeometry( 10000, 64, 32 ), 
+                    new THREE.MeshBasicMaterial( {
+                        color: 0xffffff,
+                        map: THREE.ImageUtils.loadTexture( skydomePath ),
+                        side: THREE.DoubleSide
+        			})
+                );
+                skydome.scale.set(-1, 0.5, 1);
+                skydome.name = "SKYDOME";
+                scene.add(skydome);
+    
+            //  Renderer.
+                renderer = new THREE.WebGLRenderer({ 
+                    antialias:true, 
+                    preserveDrawingBuffer:false, 
+                });
+                renderer.shadowMapEnabled = true;
+        		renderer.setPixelRatio( window.devicePixelRatio );
+        		renderer.setSize( container.offsetWidth, container.offsetHeight ); 
+        		container.appendChild( renderer.domElement );
+    
+            //  Event Listeners.
+                window.addEventListener( "resize", onWindowResize, false );
+            	container.addEventListener( "mousedown", onDocumentMouseDown, false );
+            	container.addEventListener( "mouseup", onDocumentMouseUp, false );
+                container.addEventListener( "mousemove", onDocumentMouseMove, false );
+            //  container.addEventListener( "dblclick", onDocumentClick, false );
+                container.addEventListener( "mousedown", onPegmanClickHandler, false );
+                document.body.addEventListener( "onbeforeunload", onDocumentBeforeUnload );
+
+                onWindowResize();
+                
+                var loader = new THREE.JSONLoader();
+        	    loader.load( pegmanPath, function ( gmt, mtl ) {
+                    geometry = gmt;
+                    materials = mtl;
+                    console.log("geometry:", geometry);
+                    console.log("material:", materials);
+                //  Create 100 dummy pegmen.
+                    for (var i=0; i < 100; i++) {
+                        createResultPegman();
+                    }
+                });
+            }
+            
+            function animate(){
+                requestAnimationFrame( animate );
+                render();
+                frameCount++ ;
+                update();
+            }
+                
+            function render(){
+                renderer.render( scene, camera );
+            }
+    
+            function onWindowResize() {
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize( container.offsetWidth, container.offsetHeight );
+        	}
+    
+            function onDocumentMouseMove( event ) {
+            //  Use container.innerWidth/Height when renderer container is full window.
+                //mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                //mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+            //  Use container.offsetWidth/Height when renderer container is not full window.
+               	mouse.x = ( event.clientX / container.offsetWidth ) * 2 - 1;
+               	mouse.y = - ( event.clientY / container.offsetHeight ) * 2 + 1;
+            }
+    
+            function onDocumentMouseDown( event ) {
+                event.preventDefault();
+                followUp = true;
+            }
+    
+            function onDocumentMouseUp( event ) {
+                event.preventDefault();
+                followUp = false;
+            }
+            
+            function onDocumentClick( event ) {
+                event.preventDefault();
+    
+                if ( !!intersects[0] ) {
+                    var link = document.createElement("a");
+                    link.href = intersects[0].object.userData.href;
+                    link.target = "_blank";
+                    link.onclick = function(){ document.body.removeChild(link) };
+                    //console.log(link);
+                    document.body.appendChild(link);
+                    link.click();
+                }
+            }
+                
+            function onPegmanClickHandler(){
+    
+                var cameraUnprojected = new THREE.Vector3();
+                var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+                cameraUnprojected = vector.unproject( camera );
+                var ray  = new THREE.Raycaster( 
+                    camera.position, 
+                    vector.sub( camera.position ).normalize(), 
+                    near, 
+                    far 
+                );
+
+                intersects = ray.intersectObjects( targets );
+            
+                if ( !!intersects[0] && !!controls ) {
+                //  console.log(intersects[0]);
+                //  Follow intersects[0] pegman.
+                    controls.focus(intersects[0].object, true); 
+                }
+
+            }
+
+
+            function update() {
+                frameCount++ ;
+                
+                var delta = clock.getDelta();
+                var	time = clock.getElapsedTime();
+                
+            //  if (!!lastPegman) controls.focus(lastPegman, followUp);
+            //  if (!!skydome) skydome.position.copy(camera.position);
+            
+                if (!!keyboard) keyboard.update( delta * speed );
+                if (!!avatarHelper) avatarHelper.update( delta * speed );
+                
+                var cameraUnprojected = new THREE.Vector3();
+            //  var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+                var vector = new THREE.Vector3( 0, 0, 1 );
+                cameraUnprojected = vector.unproject( camera );
+                var ray  = new THREE.Raycaster( 
+                    camera.position, vector.sub( camera.position ).normalize(), near, far 
+                );
+
+                intersects = ray.intersectObjects( targets );
+            
+                if ( !!intersects[0] ) {
+                //  Follow intersects[0] pegman.
+                    if ( !!controls ) {
+                        controls.focus(intersects[0].object, true); 
+                    //  console.log(intersects[0]);
+                    }
+                //  Show link in bottom result bar.
+                    if ( !!intersects[0].object.userData.result ) {
+                        pegmanResultbar.innerHTML = intersects[0].object.userData.result.innerHTML;
+                        modifyLinks( pegmanResultbar );
+                    }
+                }
+                
+                THREE.AnimationHandler.update( delta * speed );
+                
+                for ( var i in pegmen ) {
+                    if (  zforward ) pegmen[i].translateZ(  Math.cos(delta) );   // +x moving // zforward = true;
+                    if ( !zforward ) pegmen[i].translateZ( -Math.cos(delta) );   // -x moving // zforward = false;
+                    if (  xforward ) pegmen[i].translateX( -Math.sin(delta) );   // +z moving // xforward = true;
+                    if ( !xforward ) pegmen[i].translateX(  Math.sin(delta) );   // -z moving // xforward = false;
+                    pegmen[i].lookAt( directionRandomPoints[i] );
+                    
+                    if ( Math.ceil( pegmen[i].position.x ) == directionRandomPoints[i].x 
+                        || Math.ceil(pegmen[i].position.z) == directionRandomPoints[i].z ) {
+                        directionRandomPoints[i] = new THREE.Vector3(
+                            THREE.Math.randInt( -500, 500 ), 
+                            pegmen[i].position.y, 
+                            THREE.Math.randInt( -500, 500 ) 
+                        );
+                    }
+                }
+    
+            //  propertiesCapturer();
+    
+            }
+            
+            function modifyLinks( rootElement ){
+                var links = getNodeListAsArray( rootElement, "a" ); 
+                links.forEach( function( item, idx ) {
+    
+                //  Remove string from "&sa=..." to end.
+                    links[ idx ].href = item.href.split("&sa=")[0];
+                    
+                //  Change origin to google origin.
+                    links[ idx ].href = links[ idx ].href.replace(/http\:\/\/localhost\:4000/g, "http://www.google.com");
+                    
+                //  debugMode && console.log( "modifyLinks a.href:", links[ idx ].href );
+                    item.addEventListener("mouseup", function(e){ 
+                        e.currentTarget.target = "_blank"; 
+                    }, true);
+                });
+    
+            }
+            
+            function changeSkydome( url ){
+                var loader = new THREE.TextureLoader();
+                loader.setCrossOrigin( undefined );
+                loader.load( url, 
+                    function(texture){
+                        skydome.material.map = texture;
+                        skydome.material.map.needsUpdate = true;
+                        skydome.material.needsUpdate = true;
+                    }, 
+                    function(xhr){
+                        debugMode && console.log(xhr);
+                    }, 
+                    function(err){
+                        debugMode && console.log(err);
+                    } 
+                );
+            }
+            
+        //  PEGMEN FUNCTIONS.
+            
+            function removePegmen(){
+            
+                pegmen.forEach(function(item, index){
+                    scene.remove(item);
+                //  Dispose geometry. (Geometry is the same uuid so we do not dispose geometry.)
+                    //item.geometry.dispose();
+                //  Dispose materials;
+                    for ( var i = 0; i < item.material.materials.length; i++ ) {
+                        item.material.materials[i].dispose();
+                    }
+                });
+            }
+            
+            function resetRuntime(){
+            
+            //  Clean up animations.
+                THREE.AnimationHandler.animations = [];
+
+            //  Reset lists.
+                intersects = [];
+                morphs = [];
+                skins = [];
+                pegmen = [];
+                targets = [];
+                directionRandomPoints = [];
+            }
+            
+            function pegman_init(options) {
+            
+        	    var loader = new THREE.JSONLoader();
+        	    loader.load( pegmanPath, function ( geometry, materials ) {
+                	geometry.computeVertexNormals();
+                	geometry.computeBoundingBox();
+                	
+                	for ( var i = 0, j = materials.length; i < j; i ++ ) {
+                	    var originalMaterial = materials[i];
+                	    materials[i].skinning = true;
+                	    materials[i].map = undefined;
+                	    materials[i].shading = THREE.SmoothShading;
+                	    materials[i].color.setRGB( 1, 1, 1 );
+                	    materials[i].specular.setRGB( THREE.Math.random16(), THREE.Math.random16(), THREE.Math.random16() );
+                	    materials[i].shininess = 75;
+                	    materials[i].wrapAround = true;
+                	    materials[i].wrapRGB.set( 1, 1, 1 );
+                	}
+                	
+                	var material = new THREE.MeshFaceMaterial( materials );
+                	var pegman = new THREE.SkinnedMesh( geometry, material, false );
+                	
+                	var s = 5;  pegman.scale.set( s, s, s );
+    
+                	pegman.rotation.y = THREE.Math.randFloatSpread( Math.PI ); // direction of the avatar ?
+                	pegman.position.x = THREE.Math.randInt( -999, 999 );
+                	pegman.position.z = THREE.Math.randInt( -999, 999 );
+                	pegman.position.y = -geometry.boundingBox.min.y * s ;
+                	
+                    initPegman = pegman;
+        	    });
+            }
+
+            function createResultPegman( result ){
+            //   if (!result) return;
+            //  console.log("geometry:", geometry, "material:", materials);
+            
+            	geometry.computeVertexNormals();
+            	geometry.computeBoundingBox();
+            	
+            	for ( var i = 0; i < materials.length; i++ ) {
+            	    materials[i].skinning = true;
+            	    materials[i].map = null;
+            	    materials[i].shading = THREE.SmoothShading;
+         	        materials[i].color.setRGB(THREE.Math.random16(),THREE.Math.random16(),THREE.Math.random16());
+            	    materials[i].specular.setRGB( 1,1,1 );
+            	    materials[i].shininess = 75;
+            	    materials[i].wrapAround = true;
+            	    materials[i].wrapRGB.set(THREE.Math.random16(),THREE.Math.random16(),THREE.Math.random16());
+            	    materials[i].needsUpdate = true;
+            	}
+            	
+            	var material = new THREE.MeshFaceMaterial( materials );
+            	var pegman = new THREE.SkinnedMesh( geometry, material.clone(), false );
+            	
+            	var s = 5;  pegman.scale.set( s, s, s );
+    
+            	pegman.rotation.y = THREE.Math.randFloatSpread( Math.PI ); // direction of the avatar ?
+            	pegman.position.x = THREE.Math.randInt( -200, 200 );
+            	pegman.position.z = THREE.Math.randInt( -200, 200 );
+            	pegman.position.y = -geometry.boundingBox.min.y * s ;
+            	
+            //  Result data.
+                if (!!result) {
+                    pegman.userData.result = result;
+                    pegman.userData.textContent = result.textContent;
+                    var a = getNodeListAsArray( result, "h3.r a" )[0];      // result.getElementsByClassName("r")[0].getElementsByTagName("a")[0];
+                    if (a) pegman.name = a.innerText;
+                  	if (a) pegman.userData.href = a.href;
+                  	if (a) pegman.userData.title = a.innerText;
+                    var st = getNodeListAsArray( result, "div.r .st" )[0];  // result.getElementsByClassName("s")[0].getElementsByClassName("st")[0];
+                  	if (st) pegman.userData.summery = st.innerText;
+                }
+                
+            //  Add to scene.
+            	scene.add( pegman );
+            	skins.push( pegman );
+            	pegmen.push( pegman );
+                targets.push( pegman );
+                
+                lastPegman = pegman;
+                
+            //  Create the animation.
+            	animation = new THREE.Animation( pegman, geometry.animation );
+            	animation.play();
+            	animation.update( 0 );
+            	
+            //	Ensure Loop. // ensureLoop( geometry.animation );
+            	for ( var i = 0; i < pegman.geometry.animation.hierarchy.length; i ++ ) {
+                    var bone = pegman.geometry.animation.hierarchy[ i ];
+                    var first = bone.keys[ 0 ];
+                    var last = bone.keys[ bone.keys.length - 1 ];
+                    last.pos = first.pos;
+                    last.rot = first.rot;
+                    last.scl = first.scl;
+        	    }
+            	
+                var directionRandomPoint = new THREE.Vector3( 
+                    THREE.Math.randInt( -500, 500 ), 
+                    pegman.position.y, 
+                    THREE.Math.randInt( -500, 500 ) 
+                );
+                
+            	directionRandomPoints.push( directionRandomPoint );
+            	
+            }
+            
+            function ensureLoop( animation ) {
+        	    for ( var i = 0; i < animation.hierarchy.length; i ++ ) {
+                    var bone = animation.hierarchy[ i ];
+                    var first = bone.keys[ 0 ];
+                    var last = bone.keys[ bone.keys.length - 1 ];
+                    last.pos = first.pos;
+                    last.rot = first.rot;
+                    last.scl = first.scl;
+        	    }
+        	}
+        	
+            function loadJsonMeshFile( pathname ){
+                var object;
+                var loader = new THREE.JSONLoader();
+                loader.load( pathname, function(geometry, materials) {
+                     var material = new THREE.MeshFaceMaterial(materials);
+                     object = new THREE.Mesh(geometry, material);
+                     object.scale.set(1, 1, 1);
+                     object.position.set(0, 0, 0);
+                     object.rotation.set(0, 0, 0);
+                     scene.add(object);
+                });
+                return object;
+            }
+            
+        //  SCENE FUNCTIONS.
+            function newFpsCameraControls( camera ){
+                var controls = new THREE.FirstPersonControls( camera );
+                controls.movementSpeed = 200;
+                controls.lookSpeed = 0.05;
+                controls.noFly = true;
+                controls.autoForward = false;
+                controls.lookVertical = false;
+                controls.enabled = true;
+                return controls;
+            }
+                
+            function newDirectionalLight(hexcolor, x, y, z, intensity){
+                var light = new THREE.DirectionalLight( hexcolor );
+                light.position.set( x, y, z );
+                light.intensity = intensity;
+                scene.add( light );
+                return light;
+            }
+      
+        //  CONTROLS SWITCH.
+            function controlsEnableDisable(){
+                if (controls.enabled) disableControls();
+                else enableControls();
+            }
+    
+            function disableControls(){
+                controls.enabled = false;
+                //if ( pauser ) pauser.style.display = "";
+                //if ( pauser ) pauser.innerHTML = innerHtml;
+            }
+    
+            function enableControls(){
+                controls.enabled = true;
+                //if ( pauser ) pauser.style.display = "none";
+            }
+            
+            function toggleVisible(object){
+                object.visible = !object.visible;
+            }
+            
+            function toggleSkydome(){
+                skydome.visible = !skydome.visible;
+                groundHelper.visible = !skydome.visible;
+                axisCustomHelper.visible = !skydome.visible;
+                originAxisHelper.visible = !skydome.visible;
+            }
+                
+        //  CAMERA MEASUREMENTS
+            function propertiesCapturer(){
+                document.getElementById("framer").innerHTML = frameCount;
+                document.getElementById("cam-pos-x").innerHTML = camera.position.x.toFixed(3);
+                document.getElementById("cam-pos-y").innerHTML = camera.position.y.toFixed(3);
+                document.getElementById("cam-pos-z").innerHTML = camera.position.z.toFixed(3);
+                document.getElementById("cam-rot-x").innerHTML = camera.rotation._x.toFixed(3);
+                document.getElementById("cam-rot-y").innerHTML = camera.rotation._y.toFixed(3);
+                document.getElementById("cam-rot-z").innerHTML = camera.rotation._z.toFixed(3);
+                document.getElementById("cam-quat-w").innerHTML = camera.quaternion._w.toFixed(3);
+                document.getElementById("cam-quat-x").innerHTML = camera.quaternion._x.toFixed(3);
+                document.getElementById("cam-quat-y").innerHTML = camera.quaternion._y.toFixed(3);
+                document.getElementById("cam-quat-z").innerHTML = camera.quaternion._z.toFixed(3);
+                document.getElementById("cam-far").innerHTML = camera.far;
+                document.getElementById("cam-fov").innerHTML = camera.fov;
+                document.getElementById("mouse-x").innerHTML = mouse.x.toFixed(3);
+                document.getElementById("mouse-y").innerHTML = mouse.y.toFixed(3);
+                document.getElementById("intersects").innerHTML = intersects.length;
+            }
+        
+        //  HELPERS.
+            function newGroundHelper(){
+                var grid = new THREE.GridHelper( 1000, 10, 0x444444, 0x444444 );
+                grid.name = "GRID"
+                grid.position.y = 0;
+                scene.add( grid );
+                return grid;
+            }
+    
+            function newCustomAxisHelper(){
+                var group = new THREE.Group();
+                group.name = "AXIS";
+                scene.add(group);
+            //  Lines.
+                var geometryAxisXpos = new THREE.Geometry();
+                var geometryAxisXneg = new THREE.Geometry();
+                var geometryAxisYpos = new THREE.Geometry();
+                var geometryAxisYneg = new THREE.Geometry();
+                var geometryAxisZpos = new THREE.Geometry();
+                var geometryAxisZneg = new THREE.Geometry();
+                var materialAxisXpos = new THREE.LineBasicMaterial( {color: 0xff0000} );
+                var materialAxisXneg = new THREE.LineBasicMaterial( {color: 0xff0000} );
+                var materialAxisYpos = new THREE.LineBasicMaterial( {color: 0x00ff00} );
+                var materialAxisYneg = new THREE.LineBasicMaterial( {color: 0x00ff00} );
+                var materialAxisZpos = new THREE.LineBasicMaterial( {color: 0x0000ff} );
+                var materialAxisZneg = new THREE.LineBasicMaterial( {color: 0x0000ff} );
+                geometryAxisXpos.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 1200, 0, 0 ) );
+                geometryAxisXneg.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3(-1200, 0, 0 ) );
+                geometryAxisYpos.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 1200, 0 ) );
+                geometryAxisYneg.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0,-1200, 0 ) );
+                geometryAxisZpos.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, 1200 ) );
+                geometryAxisZneg.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0,-1200 ) );
+                var lineAxisXpos = new THREE.Line( geometryAxisXpos, materialAxisXpos );
+                var lineAxisXneg = new THREE.Line( geometryAxisXneg, materialAxisXneg );
+                var lineAxisYpos = new THREE.Line( geometryAxisYpos, materialAxisYpos );
+                var lineAxisYneg = new THREE.Line( geometryAxisYneg, materialAxisYneg );
+                var lineAxisZpos = new THREE.Line( geometryAxisZpos, materialAxisZpos );
+                var lineAxisZneg = new THREE.Line( geometryAxisZneg, materialAxisZneg );
+                group.add( lineAxisXpos );
+                group.add( lineAxisXneg );
+                //group.add( lineAxisYpos );
+                //group.add( lineAxisYneg );
+                group.add( lineAxisZpos );
+                group.add( lineAxisZneg );
+                return group;
+            }
+    
+            function newOriginAxisHelper(){
+                var group = new THREE.Group();
+                group.name = "ORIGINS";
+                scene.add(group);
+                var materialFace = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+            	var materialSide = new THREE.MeshBasicMaterial( { color: 0x888888 } );
+            	var materialArray = [ materialFace, materialSide ];
+                var textMaterial = new THREE.MeshFaceMaterial(materialArray);
+                h0Style = {size: 40, height: 2, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1};
+            	h1Style = { size: 20, height: 1, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 };
+            	h2Style = { size: 10, height: 1, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 };
+            	h3Style = { size: 5, height: 0.5, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 };
+                // "+x"
+                var thetext = "+x";
+            	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
+            	var textMesh = new THREE.Mesh(textGeometry, textMaterial );
+            	textGeometry.computeBoundingBox();
+            	var textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+            	textMesh.scale.set( 2, 2, 5); 
+            	textMesh.geometry.center();
+            	textMesh.position.set( 1000, 20, 0 );
+            	textMesh.rotation.x = 0;
+            	textMesh.rotation.y = -Math.PI * 0.5;
+            	textMesh.rotation.z = 0;
+            	group.add(textMesh); 
+                // "-x"
+                var thetext = "-x";
+            	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
+            	var textMesh = new THREE.Mesh(textGeometry, textMaterial );
+            	textGeometry.computeBoundingBox();
+            	var textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+            	textMesh.scale.set( 2, 2, 5); 
+            	textMesh.geometry.center();
+            	textMesh.position.set( -1000, 20, 0 );
+            	textMesh.rotation.x = 0;
+            	textMesh.rotation.y = Math.PI * 0.5;
+            	textMesh.rotation.z = 0;
+            	group.add(textMesh); 
+                // "+z"
+                var thetext = "+z";
+            	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
+            	var textMesh = new THREE.Mesh(textGeometry, textMaterial );
+            	textGeometry.computeBoundingBox();
+            	var textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+            	textMesh.scale.set( 2, 2, 5); 
+            	textMesh.geometry.center();
+            	textMesh.position.set( 0, 20, 1000 );
+            	textMesh.rotation.x = 0;
+            	textMesh.rotation.y = -Math.PI;
+            	textMesh.rotation.z = 0;
+            	group.add(textMesh); 
+                // "-z"
+                var thetext = "-z";
+            	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
+            	var textMesh = new THREE.Mesh(textGeometry, textMaterial );
+            	textGeometry.computeBoundingBox();
+            	var textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+            	textMesh.scale.set( 2, 2, 5); 
+            	textMesh.geometry.center();
+            	textMesh.position.set( 0, 20, -1000 );
+            	textMesh.rotation.x = 0;
+            	textMesh.rotation.y = 0;
+            	textMesh.rotation.z = 0;
+            	group.add(textMesh); 
+                // "+y"
+                var thetext = "+y";
+            	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
+            	var textMesh = new THREE.Mesh(textGeometry, textMaterial );
+            	textGeometry.computeBoundingBox();
+            	var textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+            	textMesh.scale.set( 2, 2, 5); 
+            	textMesh.geometry.center();
+            	textMesh.position.set( 0, 1000, 0 );
+            	textMesh.rotation.x = Math.PI * 0.5;
+            	textMesh.rotation.y = 0;
+            	textMesh.rotation.z = 0;
+            	group.add(textMesh); 
+                // "-y"
+                var thetext = "-y";
+            	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
+            	var textMesh = new THREE.Mesh(textGeometry, textMaterial );
+            	textGeometry.computeBoundingBox();
+            	var textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+            	textMesh.scale.set( 2, 2, 5); 
+            	textMesh.geometry.center();
+            	textMesh.position.set( 0, -1000, 0 );
+            	textMesh.rotation.x = -Math.PI * 0.5;
+            	textMesh.rotation.y = 0;
+            	textMesh.rotation.z = 0;
+            	group.add(textMesh);
+                return group;
+            }
+    
+            function deselectSELECTED(){
+                if ( SELECTED ) {
+                    if ( SELECTED.children[0] ) SELECTED.children[0].visible = false;
+                    SELECTED.selected = false;
+                    SELECTED = null;
+                }
+            }
+            
+            function wildcardAnyObjectAndChild( object, callback ){
+            // callback: function(item, index){};
+            // Find any children of an object and object itself.
+            
+                if ( object && callback ){
+                
+                //  Object itself.
+                    if ( !(object instanceof THREE.Scene) ) callback( object );
+                    
+                //  Object children.
+                    if ( object.children ) object.children.forEach( function( item, index ){
+                        wildcardAnyObjectAndChild( item, callback );
+                    });
+                    
+                } else {
+                
+                    if ( !object ) debugMode && console.error( "wildcardAnyObjectAndChild:", "object is not defined:", object );
+                    if ( !callback ) debugMode && console.error( "wildcardAnyObjectAndChild:", "object is not defined:", callback );
+                }
+            }
+    
+            function convertingFromBufferGeometry( object ){
+                debugMode && console.log("converting from buffer geometry:", object);
+                if( object.children ) {
+                    for( child in object.children ) {
+                        object.children[child].geometry = new THREE.Geometry().fromBufferGeometry( object.children[child].geometry );
+    				    debugMode && console.log(child, object.children[child].name);
+                    }
+                }
+            }
+            
+            function creatingSelectedEdgesHelpers( object ){
+                debugMode && console.log("creating selected edges helpers:", object);
+                if( object.children ) {
+                    for( child in object.children ) {
+                        object.children[child].add( new THREE.EdgesHelper( object.children[child], 0x00ff00, 1 ) );
+    				    debugMode && console.log(child, object.children[child].name);
+                    }
+                }
+            }
+            
+        	function loadTexture( url, mapping, onLoad, onError ) {
+    		//  console.warn( "THREE.ImageUtils.loadTexture has been deprecated. Use THREE.TextureLoader() instead." );
+        		function onLoad(txr){}
+        		function onProgress(xhr){}
+        		function onError(err){}
+                var loader = new THREE.TextureLoader();
+        		loader.setCrossOrigin( undefined );
+        		var texture = loader.load( url, onLoad, onProgress, onError );
+        		if ( mapping ) texture.mapping = mapping;
+        		return texture;
+        	}
+    
+            function onDocumentBeforeUnload(event) {
+                debugMode && console.log("GoogleWebSpace before unload:");
+                
+            //  Remove pegmen from memory.
+                pegmen.forEach(function(item, index){
+                    scene.remove(item);
+                //  Dispose materials;
+                    if ( !!item.material && !!item.material.materials ) {
+                        for ( var i in item.material.materials ) {
+                            item.material.materials[i].dispose();
+                        }
+                    }
+                    if ( !!item.material && !item.material.materials ) item.material.dispose();
+                });
+                
+            //  Dispose geometry.
+                if ( !!geometry ) {
+                    geometry.dispose();
+                    render = function (){};
+                    update = function (){};
+                    animate = function (){};
+                }
+            }
+        	
+        </script>
+
+    </body>
+
+</html>
