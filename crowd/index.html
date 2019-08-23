@@ -566,7 +566,7 @@
                 	    materials[i].map = undefined;
                 	    materials[i].shading = THREE.SmoothShading;
                 	    materials[i].color.setRGB( 1, 1, 1 );
-                	    materials[i].specular.setRGB( THREE.Math.random(), THREE.Math.random(), THREE.Math.random() );
+                	    materials[i].specular.setRGB( Math.random(), Math.random(), Math.random() );
                 	    materials[i].shininess = 75;
                 	    materials[i].wrapAround = true;
                 	    materials[i].wrapRGB.set( 1, 1, 1 );
@@ -597,11 +597,11 @@
             	    materials[i].skinning = true;
             	    materials[i].map = null;
             	    materials[i].shading = THREE.SmoothShading;
-         	        materials[i].color.setRGB(THREE.Math.random(),THREE.Math.random(),THREE.Math.random());
+         	        materials[i].color.setRGB(Math.random(),Math.random(),Math.random());
             	    materials[i].specular.setRGB( 1,1,1 );
             	    materials[i].shininess = 75;
             	    materials[i].wrapAround = true;
-            	    materials[i].wrapRGB.set(THREE.Math.random(),THREE.Math.random(),THREE.Math.random());
+            	    materials[i].wrapRGB.set(Math.random(),Math.random(),Math.random());
             	    materials[i].needsUpdate = true;
             	}
             	
