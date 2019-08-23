@@ -339,7 +339,7 @@
                     var loader = new THREE.JSONLoader();
                     loader.load( pegmanPath, function ( geometry, material ) {
                         console.log("geometry:", geometry);
-                        console.log("material:", material);
+                        console.log("material:", material); // multimaterial.
                     //  Create 100 dummy pegmen.
                         for (var i=0; i < 100; i++) {
                             //  createResultPegman();
@@ -559,7 +559,6 @@
                 	    materials[i].color.setRGB( 1, 1, 1 );
                 	    materials[i].specular.setRGB( Math.random(), Math.random(), Math.random() );
                 	    materials[i].shininess = 75;
-                	    materials[i].wrapRGB.set( 1, 1, 1 );
                 	}
                 	
                 	var material = new THREE.MeshFaceMaterial( materials );
@@ -590,7 +589,6 @@
          	        materials[i].color.setRGB(Math.random(),Math.random(),Math.random());
             	    materials[i].specular.setRGB( 1,1,1 );
             	    materials[i].shininess = 75;
-            	    materials[i].wrapRGB.set(Math.random(),Math.random(),Math.random());
             	    materials[i].needsUpdate = true;
             	}
             	
