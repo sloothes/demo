@@ -263,27 +263,36 @@
             animate();
 
             function init( container ) {
-    
-                camera = new THREE.PerspectiveCamera( 50, container.offsetWidth / container.offsetWidth, 1, 100000 );
-                camera.position.set( 200, 10, 0 );
-                camera.rotation.set( 0, 0, 0, "XYZ" );
-                camera.name = "CAMERA"
-                
-                scene = new THREE.Scene();
-                projector = new THREE.Projector();
-                controls = new THREE.EditorControls(camera);
-            
-                light0 = newDirectionalLight(0xffffff, 0, 0, 1000, 0.5);
-                light1 = newDirectionalLight(0xffffff, 1000, 0, -1000, 0.5);
-                light2 = newDirectionalLight(0xffffff, -1000, 1000, 1000, 0.25);
-                light3 = newDirectionalLight(0xffffff, 0, -1000, 0, 0.25);
-            
+
+                (function(){
+                    camera = new THREE.PerspectiveCamera( 50, container.offsetWidth / container.offsetWidth, 1, 100000 );
+                    camera.position.set( 200, 10, 0 );
+                    camera.rotation.set( 0, 0, 0, "XYZ" );
+                    camera.name = "CAMERA"
+                })();
+
+                (function(){
+                    scene = new THREE.Scene();
+                    projector = new THREE.Projector();
+                    controls = new THREE.EditorControls(camera);
+                })();
+
+                (function(){
+                    light0 = newDirectionalLight(0xffffff, 0, 0, 1000, 0.5);
+                    light1 = newDirectionalLight(0xffffff, 1000, 0, -1000, 0.5);
+                    light2 = newDirectionalLight(0xffffff, -1000, 1000, 1000, 0.25);
+                    light3 = newDirectionalLight(0xffffff, 0, -1000, 0, 0.25);
+                })();
+
             //  Laser light.
-                laserLight = new THREE.PointLight( 0x00ff44, 0.1, 10 );
-                laserLight.position.copy( camera.position );
-                laserLight.intensity = 2;
-                laserLight.name = "LASERPOINTER"
-                scene.add( laserLight );
+                (function(){
+                    laserLight = new THREE.PointLight( 0x00ff44, 0.1, 10 );
+                    laserLight.position.copy( camera.position );
+                    laserLight.intensity = 2;
+                    laserLight.name = "LASERPOINTER"
+                    scene.add( laserLight );
+                })();
+
             /*
                 groundHelper = newGroundHelper();
                 groundHelper.visible = true;
@@ -293,51 +302,58 @@
                 originAxisHelper.visible = true;
             */
             //  Skydome.
-                var
-                skydome = new THREE.Mesh( 
-                    new THREE.SphereGeometry( 10000, 64, 32 ), 
-                    new THREE.MeshBasicMaterial( {
-                        color: 0xffffff,
-                        map: THREE.TextureLoader().load( skydomePath ),
-                        side: THREE.DoubleSide
-        			})
-                );
-                skydome.scale.set(-1, 0.5, 1);
-                skydome.name = "SKYDOME";
-                scene.add(skydome);
-    
+                (function(){
+                    var loader = THREE.TextureLoader();
+                    skydome = new THREE.Mesh( 
+                        new THREE.SphereGeometry( 10000, 64, 32 ), 
+                        new THREE.MeshBasicMaterial( {
+                            color: 0xffffff,
+                            map: loader.load( skydomePath ),
+                            side: THREE.DoubleSide
+                        })
+                    );
+                    skydome.scale.set(-1, 0.5, 1);
+                    skydome.name = "SKYDOME";
+                    scene.add(skydome);
+                })();
+
             //  Renderer.
-                renderer = new THREE.WebGLRenderer({ 
-                    antialias:true, 
-                    preserveDrawingBuffer:false, 
-                });
-                renderer.shadowMapEnabled = true;
-        		renderer.setPixelRatio( window.devicePixelRatio );
-        		renderer.setSize( container.offsetWidth, container.offsetHeight ); 
-        		container.appendChild( renderer.domElement );
-    
-            //  Event Listeners.
-                window.addEventListener( "resize", onWindowResize, false );
-            	container.addEventListener( "mousedown", onDocumentMouseDown, false );
-            	container.addEventListener( "mouseup", onDocumentMouseUp, false );
-                container.addEventListener( "mousemove", onDocumentMouseMove, false );
-            //  container.addEventListener( "dblclick", onDocumentClick, false );
-                container.addEventListener( "mousedown", onPegmanClickHandler, false );
-                document.body.addEventListener( "onbeforeunload", onDocumentBeforeUnload );
+                (function(){
+                    renderer = new THREE.WebGLRenderer({ 
+                        antialias:true, 
+                        preserveDrawingBuffer:false, 
+                    });
+                    renderer.shadowMapEnabled = true;
+                    renderer.setPixelRatio( window.devicePixelRatio );
+                    renderer.setSize( container.offsetWidth, container.offsetHeight ); 
+                    container.appendChild( renderer.domElement );
+
+                //  Event Listeners.
+                    window.addEventListener( "resize", onWindowResize, false );
+                    container.addEventListener( "mousedown", onDocumentMouseDown, false );
+                    container.addEventListener( "mouseup", onDocumentMouseUp, false );
+                    container.addEventListener( "mousemove", onDocumentMouseMove, false );
+                //  container.addEventListener( "dblclick", onDocumentClick, false );
+                    container.addEventListener( "mousedown", onPegmanClickHandler, false );
+                    document.body.addEventListener( "onbeforeunload", onDocumentBeforeUnload );
+                })();
+
+                (function(){
+                    var loader = new THREE.JSONLoader();
+                    loader.load( pegmanPath, function ( gmt, mtl ) {
+                        geometry = gmt;
+                        materials = mtl;
+                        console.log("geometry:", geometry);
+                        console.log("material:", materials);
+                    //  Create 100 dummy pegmen.
+                        for (var i=0; i < 100; i++) {
+                            createResultPegman();
+                        }
+                    });
+                })();
 
                 onWindowResize();
-                
-                var loader = new THREE.JSONLoader();
-        	    loader.load( pegmanPath, function ( gmt, mtl ) {
-                    geometry = gmt;
-                    materials = mtl;
-                    console.log("geometry:", geometry);
-                    console.log("material:", materials);
-                //  Create 100 dummy pegmen.
-                    for (var i=0; i < 100; i++) {
-                        createResultPegman();
-                    }
-                });
+
             }
             
             function animate(){
