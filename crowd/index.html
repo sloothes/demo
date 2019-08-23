@@ -192,16 +192,16 @@
 
             if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
         
-            frameCount = 0;
-            mesh = undefined;
-            SELECTED = undefined;
-            seaLevel = -750;
-            followUp = false;
+            var frameCount = 0;
+            var mesh = undefined;
+            var SELECTED = undefined;
+            var seaLevel = -750;
+            var followUp = false;
             var lastPegman;
             
             var container, camera, controls, scene, renderer;
-            near = 0;
-            far = Infinity;
+            var near = 0;
+            var far = Infinity;
             var light0, light1, light2;
             var armature, armatureHelper;
             var font, h0, h1, h2, h3, h4, h5, h6;
@@ -210,12 +210,12 @@
             var laserLight;
             var groundHelper;
             var skydome;
-            keyboard = new KeyboardState();
-            clock = new THREE.Clock();
-            helpCameraActive = false;
+            var keyboard = new KeyboardState();
+            var clock = new THREE.Clock();
+            var helpCameraActive = false;
             var directionSphere;
-            speed = 1.9;
-            materialArray = [];
+            var speed = 1.9;
+            var materialArray = [];
             
             var listener = new THREE.AudioListener();
             var soundClick = new THREE.Audio( listener );
@@ -227,37 +227,37 @@
     
             var projector;
             var raycaster;
-            mouse = new THREE.Vector2();
+            var mouse = new THREE.Vector2();
             
-            sect = 0;
-            intersects = [];
-            morphs = [];
-            skins = [];
-            pegmen = [];
-            targets = [];
-            directionRandomPoints = [];
+            var sect = 0;
+            var intersects = [];
+            var morphs = [];
+            var skins = [];
+            var pegmen = [];
+            var targets = [];
+            var directionRandomPoints = [];
             
             var animation;
             var avatarHelper;
             var myAvatar;
             var shootedEnemy;
             var othersAvatar;
-            xforward = true;
-            zforward = true;
+            var xforward = true;
+            var zforward = true;
             
             var skydomePath = "skydomes/skydome002.jpg";
             var pegmanPath = "models/human_walk_0_female.js";
             var container = $("#render-container")[0];
-            pegmanResultbar = $("#pegman-result-bar")[0];
+            var pegmanResultbar = $("#pegman-result-bar")[0];
             var pauser = $("#pauser")[0];
             var innerHtml = "<p style='font-size:1em;'>PAUSED</p><p>Click to continue...</p><p style='font-size:0.5em;'>anywhere3d.com</p>";
             
-            googleCapacity = 100;
-            googleResults = [];
-            currentIndex = 0;
+            var googleCapacity = 100;
+            var googleResults = [];
+            var currentIndex = 0;
             THREE.AnimationHandler.animations = [];
-            geometry = {};
-            materials = [];
+        //  var geometry = {};
+        //  var materials = [];
             
             init( container );
             animate();
