@@ -293,11 +293,12 @@
                 originAxisHelper.visible = true;
             */
             //  Skydome.
+                var
                 skydome = new THREE.Mesh( 
                     new THREE.SphereGeometry( 10000, 64, 32 ), 
                     new THREE.MeshBasicMaterial( {
                         color: 0xffffff,
-                        map: THREE.TextureLoader().loadTexture( skydomePath ),
+                        map: THREE.TextureLoader().load( skydomePath ),
                         side: THREE.DoubleSide
         			})
                 );
