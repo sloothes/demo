@@ -4,9 +4,12 @@
         <meta charset="UTF-8">
         <meta http-equiv="keywords" content="google, web, space, search, funny, easy, fast, anywhere, 3D" />
         <meta http-equiv="description" content="google, web, space, search, funny, easy, fast, anywhere, 3D" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Google Search WebSpace</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <title>Google Search Pegmen</title>
+
+        <link rel="stylesheet" href="/css/bootstrap-v3.3.7.min.css">
+
         <style>
             * { box-sizing:border-box; -moz-box-sizing:border-box; margin:0px; padding:0px;}
             html, body {width: 100%; height: 100%;}
@@ -852,8 +855,8 @@
             	animation.update( 0 );
             	
             //	Ensure Loop. // ensureLoop( geometry.animation );
-            	for ( var i = 0; i < pegman.geometry.animation.hierarchy.length; i ++ ) {
-                    var bone = pegman.geometry.animation.hierarchy[ i ];
+            	for ( var i = 0; i < data.hierarchy.length; i ++ ) {
+                    var bone = data.hierarchy[ i ];
                     var first = bone.keys[ 0 ];
                     var last = bone.keys[ bone.keys.length - 1 ];
                     last.pos = first.pos;
@@ -975,8 +978,10 @@
     
             function newCustomAxisHelper(){
                 var group = new THREE.Group();
-                group.name = "AXIS";
+
                 scene.add(group);
+                group.name = "AXIS";
+
             //  Lines.
                 var geometryAxisXpos = new THREE.Geometry();
                 var geometryAxisXneg = new THREE.Geometry();
@@ -984,45 +989,66 @@
                 var geometryAxisYneg = new THREE.Geometry();
                 var geometryAxisZpos = new THREE.Geometry();
                 var geometryAxisZneg = new THREE.Geometry();
+
                 var materialAxisXpos = new THREE.LineBasicMaterial( {color: 0xff0000} );
                 var materialAxisXneg = new THREE.LineBasicMaterial( {color: 0xff0000} );
                 var materialAxisYpos = new THREE.LineBasicMaterial( {color: 0x00ff00} );
                 var materialAxisYneg = new THREE.LineBasicMaterial( {color: 0x00ff00} );
                 var materialAxisZpos = new THREE.LineBasicMaterial( {color: 0x0000ff} );
                 var materialAxisZneg = new THREE.LineBasicMaterial( {color: 0x0000ff} );
+
                 geometryAxisXpos.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 1200, 0, 0 ) );
                 geometryAxisXneg.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3(-1200, 0, 0 ) );
                 geometryAxisYpos.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 1200, 0 ) );
                 geometryAxisYneg.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0,-1200, 0 ) );
                 geometryAxisZpos.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, 1200 ) );
                 geometryAxisZneg.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0,-1200 ) );
+
                 var lineAxisXpos = new THREE.Line( geometryAxisXpos, materialAxisXpos );
                 var lineAxisXneg = new THREE.Line( geometryAxisXneg, materialAxisXneg );
                 var lineAxisYpos = new THREE.Line( geometryAxisYpos, materialAxisYpos );
                 var lineAxisYneg = new THREE.Line( geometryAxisYneg, materialAxisYneg );
                 var lineAxisZpos = new THREE.Line( geometryAxisZpos, materialAxisZpos );
                 var lineAxisZneg = new THREE.Line( geometryAxisZneg, materialAxisZneg );
+
                 group.add( lineAxisXpos );
                 group.add( lineAxisXneg );
                 //group.add( lineAxisYpos );
                 //group.add( lineAxisYneg );
                 group.add( lineAxisZpos );
                 group.add( lineAxisZneg );
+
                 return group;
             }
     
             function newOriginAxisHelper(){
                 var group = new THREE.Group();
-                group.name = "ORIGINS";
+
                 scene.add(group);
+                group.name = "ORIGINS";
+
                 var materialFace = new THREE.MeshBasicMaterial( { color: 0xffffff } );
             	var materialSide = new THREE.MeshBasicMaterial( { color: 0x888888 } );
             	var materialArray = [ materialFace, materialSide ];
                 var textMaterial = new THREE.MeshFaceMaterial(materialArray);
-                h0Style = {size: 40, height: 2, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1};
-            	h1Style = { size: 20, height: 1, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 };
-            	h2Style = { size: 10, height: 1, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 };
-            	h3Style = { size: 5, height: 0.5, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 };
+
+                h0Style = {
+                    size: 40, height: 2, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", 
+                    bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1
+                };
+            	h1Style = { 
+                    size: 20, height: 1, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", 
+                    bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 
+                };
+            	h2Style = { 
+                    size: 10, height: 1, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", 
+                    bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 
+                };
+            	h3Style = { 
+                    size: 5, height: 0.5, curveSegments: 10, font: "helvetiker", weight: "normal", style: "normal", 
+                    bevelThickness: 1, bevelSize: 2, bevelEnabled: false, material: 0, extrudeMaterial: 1 
+                };
+
                 // "+x"
                 var thetext = "+x";
             	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
@@ -1036,6 +1062,7 @@
             	textMesh.rotation.y = -Math.PI * 0.5;
             	textMesh.rotation.z = 0;
             	group.add(textMesh); 
+
                 // "-x"
                 var thetext = "-x";
             	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
@@ -1049,6 +1076,7 @@
             	textMesh.rotation.y = Math.PI * 0.5;
             	textMesh.rotation.z = 0;
             	group.add(textMesh); 
+
                 // "+z"
                 var thetext = "+z";
             	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
@@ -1062,6 +1090,7 @@
             	textMesh.rotation.y = -Math.PI;
             	textMesh.rotation.z = 0;
             	group.add(textMesh); 
+
                 // "-z"
                 var thetext = "-z";
             	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
@@ -1075,6 +1104,7 @@
             	textMesh.rotation.y = 0;
             	textMesh.rotation.z = 0;
             	group.add(textMesh); 
+
                 // "+y"
                 var thetext = "+y";
             	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
@@ -1088,6 +1118,7 @@
             	textMesh.rotation.y = 0;
             	textMesh.rotation.z = 0;
             	group.add(textMesh); 
+
                 // "-y"
                 var thetext = "-y";
             	var textGeometry = new THREE.TextGeometry( thetext, h1Style );
@@ -1101,6 +1132,7 @@
             	textMesh.rotation.y = 0;
             	textMesh.rotation.z = 0;
             	group.add(textMesh);
+
                 return group;
             }
     
@@ -1166,27 +1198,30 @@
         	}
     
             function onDocumentBeforeUnload(event) {
-                debugMode && console.log("GoogleWebSpace before unload:");
-                
             //  Remove pegmen from memory.
-                pegmen.forEach(function(item, index){
-                    scene.remove(item);
-                //  Dispose materials;
-                    if ( !!item.material && !!item.material.materials ) {
-                        for ( var i in item.material.materials ) {
-                            item.material.materials[i].dispose();
-                        }
-                    }
-                    if ( !!item.material && !item.material.materials ) item.material.dispose();
-                });
                 
             //  Dispose geometry.
-                if ( !!geometry ) {
+                if ( geometry ) {
                     geometry.dispose();
                     render = function (){};
                     update = function (){};
                     animate = function (){};
                 }
+
+            //  Dispose materials.
+                pegmen.forEach(function(item, index){
+                    scene.remove(item);
+                //  Dispose materials;
+                    if ( item.material ) {
+                        if ( item.material.materials ) {
+                            for ( var i in item.material.materials ) {
+                                item.material.materials[i].dispose();
+                            }
+                        } else {
+                            item.material.dispose();
+                        }
+                    }
+                });
             }
         	
         </script>
