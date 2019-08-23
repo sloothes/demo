@@ -341,9 +341,11 @@
 
                 (function(){
                     var loader = new THREE.JSONLoader();
-                    loader.load( pegmanPath, function ( geometry, materials ) {
+                    loader.load( pegmanPath, function ( gmt, mtl ) {
+                        var geometry = gmt;   // important!
+                        var materials = mtl;  // important!
                         console.log("geometry:", geometry);
-                        console.log("material:", materials); // multimaterial.
+                        console.log("materials:", materials); // multimaterial.
                     //  Create 100 dummy pegmen.
                         for (var i=0; i < 100; i++) {
                             createResultPegman();
