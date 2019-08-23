@@ -191,15 +191,20 @@
         <script>
 
             if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-        
+
+            var container, 
+                camera, 
+                controls, 
+                scene, 
+                renderer;
+
+            var lastPegman;
             var frameCount = 0;
             var mesh = undefined;
             var SELECTED = undefined;
             var seaLevel = -750;
             var followUp = false;
-            var lastPegman;
-            
-            var container, camera, controls, scene, renderer;
+
             var near = 0;
             var far = Infinity;
             var light0, light1, light2;
@@ -236,7 +241,9 @@
             var pegmen = [];
             var targets = [];
             var directionRandomPoints = [];
-            
+
+            THREE.AnimationHandler.animations = [];
+
             var animation;
             var avatarHelper;
             var myAvatar;
@@ -245,23 +252,28 @@
             var xforward = true;
             var zforward = true;
             
-            var skydomePath = "skydomes/skydome002.jpg";
-            var pegmanPath = "models/human_walk_0_female.js";
+            var pauser = $("#pauser")[0];
             var container = $("#render-container")[0];
             var pegmanResultbar = $("#pegman-result-bar")[0];
-            var pauser = $("#pauser")[0];
             var innerHtml = "<p style='font-size:1em;'>PAUSED</p><p>Click to continue...</p><p style='font-size:0.5em;'>anywhere3d.com</p>";
             
-            var googleCapacity = 100;
-            var googleResults = [];
             var currentIndex = 0;
-            THREE.AnimationHandler.animations = [];
-        //  var geometry = {};
-        //  var materials = [];
+            var googleResults = [];
+            var googleCapacity = 100;
 
-            var data = {
+            var geometry = {};
+            var materials = [];
 
-                "name":"ActionFemale","fps":30,"length":1,"hierarchy":[
+            const skydomePath = "skydomes/skydome002.jpg";
+            const pegmanPath  = "models/human_walk_0_female.js";
+
+            const data = {
+
+                "fps":30,
+                "name":"walk",
+                "length":1.000000,
+
+                "hierarchy":[
 
                     {"parent":-1,"keys":[
                         {"time":0.000000,"pos":[0.000000,-0.238009,-0.149781],"rot":[-0.000000,0.130526,0.000000,0.991445],"scl":[1,1,1]},
@@ -459,8 +471,10 @@
                         {"time":0.500000,"pos":[0.028998,0.003394,0.110154],"rot":[-0.046210,0.088421,-0.063526,0.992981]},
                         {"time":0.750000,"pos":[0.028998,0.003394,0.110154],"rot":[-0.046210,0.088421,-0.063526,0.992981]},
                         {"time":1.000000,"pos":[0.028998,0.003394,0.110154],"rot":[-0.046210,0.088421,-0.063526,0.992981],"scl":[1,1,1]}
-                    ]}
-                ]
+                    ]},
+
+                ],
+
             };
             
             init( container );
