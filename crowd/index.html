@@ -297,7 +297,7 @@
                     new THREE.SphereGeometry( 10000, 64, 32 ), 
                     new THREE.MeshBasicMaterial( {
                         color: 0xffffff,
-                        map: THREE.ImageUtils.loadTexture( skydomePath ),
+                        map: THREE.TextureLoader().loadTexture( skydomePath ),
                         side: THREE.DoubleSide
         			})
                 );
@@ -548,7 +548,7 @@
                 	    materials[i].map = undefined;
                 	    materials[i].shading = THREE.SmoothShading;
                 	    materials[i].color.setRGB( 1, 1, 1 );
-                	    materials[i].specular.setRGB( THREE.Math.random16(), THREE.Math.random16(), THREE.Math.random16() );
+                	    materials[i].specular.setRGB( THREE.Math.random(), THREE.Math.random(), THREE.Math.random() );
                 	    materials[i].shininess = 75;
                 	    materials[i].wrapAround = true;
                 	    materials[i].wrapRGB.set( 1, 1, 1 );
@@ -579,11 +579,11 @@
             	    materials[i].skinning = true;
             	    materials[i].map = null;
             	    materials[i].shading = THREE.SmoothShading;
-         	        materials[i].color.setRGB(THREE.Math.random16(),THREE.Math.random16(),THREE.Math.random16());
+         	        materials[i].color.setRGB(THREE.Math.random(),THREE.Math.random(),THREE.Math.random());
             	    materials[i].specular.setRGB( 1,1,1 );
             	    materials[i].shininess = 75;
             	    materials[i].wrapAround = true;
-            	    materials[i].wrapRGB.set(THREE.Math.random16(),THREE.Math.random16(),THREE.Math.random16());
+            	    materials[i].wrapRGB.set(THREE.Math.random(),THREE.Math.random(),THREE.Math.random());
             	    materials[i].needsUpdate = true;
             	}
             	
