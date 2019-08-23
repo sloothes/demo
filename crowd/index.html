@@ -303,12 +303,13 @@
             */
             //  Skydome.
                 (function(){
-                    var loader = THREE.TextureLoader();
+                    var loader = new THREE.TextureLoader();
+                    var texture = loader.load( skydomePath );
                     skydome = new THREE.Mesh( 
                         new THREE.SphereGeometry( 10000, 64, 32 ), 
                         new THREE.MeshBasicMaterial( {
                             color: 0xffffff,
-                            map: loader.load( skydomePath ),
+                            map: texture,
                             side: THREE.DoubleSide
                         })
                     );
