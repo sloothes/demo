@@ -264,18 +264,14 @@
 
             function init( container ) {
 
-                (function(){
-                    camera = new THREE.PerspectiveCamera( 50, container.offsetWidth / container.offsetWidth, 1, 100000 );
-                    camera.position.set( 200, 10, 0 );
-                    camera.rotation.set( 0, 0, 0, "XYZ" );
-                    camera.name = "CAMERA"
-                })();
+                camera = new THREE.PerspectiveCamera( 50, container.offsetWidth / container.offsetWidth, 1, 100000 );
+                camera.position.set( 200, 10, 0 );
+                camera.rotation.set( 0, 0, 0, "XYZ" );
+                camera.name = "CAMERA"
 
-                (function(){
-                    scene = new THREE.Scene();
-                    projector = new THREE.Projector();
-                    controls = new THREE.EditorControls(camera);
-                })();
+                scene = new THREE.Scene();
+                projector = new THREE.Projector();
+                controls = new THREE.EditorControls(camera);
 
                 (function(){
                     light0 = newDirectionalLight(0xffffff, 0, 0, 1000, 0.5);
