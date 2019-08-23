@@ -297,6 +297,7 @@
                 originAxisHelper = newOriginAxisHelper();
                 originAxisHelper.visible = true;
             */
+
             //  Skydome.
                 (function(){
                     var loader = new THREE.TextureLoader();
@@ -316,11 +317,13 @@
 
             //  Renderer.
                 (function(){
+
                     renderer = new THREE.WebGLRenderer({ 
                         antialias:true, 
                         preserveDrawingBuffer:false, 
                     });
-                    renderer.shadowMapEnabled = true;
+
+                    renderer.shadowMap.enabled = true;
                     renderer.setPixelRatio( window.devicePixelRatio );
                     renderer.setSize( container.offsetWidth, container.offsetHeight ); 
                     container.appendChild( renderer.domElement );
@@ -333,6 +336,7 @@
                 //  container.addEventListener( "dblclick", onDocumentClick, false );
                     container.addEventListener( "mousedown", onPegmanClickHandler, false );
                     document.body.addEventListener( "onbeforeunload", onDocumentBeforeUnload );
+
                 })();
 
                 (function(){
@@ -342,7 +346,7 @@
                         console.log("material:", material); // multimaterial.
                     //  Create 100 dummy pegmen.
                         for (var i=0; i < 100; i++) {
-                            //  createResultPegman();
+                            createResultPegman();
                         }
                     });
                 })();
@@ -621,7 +625,8 @@
                 targets.push( pegman );
                 
                 lastPegman = pegman;
-                
+
+        /*
             //  Create the animation.
             	animation = new THREE.Animation( pegman, geometry.animation );
             	animation.play();
@@ -636,7 +641,8 @@
                     last.rot = first.rot;
                     last.scl = first.scl;
         	    }
-            	
+        */
+
                 var directionRandomPoint = new THREE.Vector3( 
                     THREE.Math.randInt( -500, 500 ), 
                     pegman.position.y, 
