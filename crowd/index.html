@@ -794,8 +794,8 @@
                 	var s = 5;  pegman.scale.set( s, s, s );
     
                 	pegman.rotation.y = THREE.Math.randFloatSpread( Math.PI ); // direction of the avatar ?
-                	pegman.position.x = THREE.Math.randInt( -999, 999 );
-                	pegman.position.z = THREE.Math.randInt( -999, 999 );
+                	pegman.position.x = THREE.Math.randInt( -200, 200 );
+                	pegman.position.z = THREE.Math.randInt( -200, 200 );
                 	pegman.position.y = -geometry.boundingBox.min.y * s ;
                 	
                     initPegman = pegman;
@@ -865,9 +865,9 @@
         	    }
 
                 var directionRandomPoint = new THREE.Vector3( 
-                    THREE.Math.randInt( -500, 500 ), 
+                    THREE.Math.randInt( -200, 200 ), 
                     pegman.position.y, 
-                    THREE.Math.randInt( -500, 500 ) 
+                    THREE.Math.randInt( -200, 200 ) 
                 );
                 
             	directionRandomPoints.push( directionRandomPoint );
