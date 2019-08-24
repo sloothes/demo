@@ -697,9 +697,9 @@
                     if ( Math.ceil( pegmen[i].position.x ) == directionRandomPoints[i].x 
                         || Math.ceil(pegmen[i].position.z) == directionRandomPoints[i].z ) {
                         directionRandomPoints[i] = new THREE.Vector3(
-                            THREE.Math.randInt( -500, 500 ), 
+                            THREE.Math.randInt( -200, 200 ), 
                             pegmen[i].position.y, 
-                            THREE.Math.randInt( -500, 500 ) 
+                            THREE.Math.randInt( -200, 200 ) 
                         );
                     }
                 }
