@@ -183,10 +183,6 @@
 
     var male, female, skeleton;
 
-    var dbUSER = new zango.Db( "USER", {
-        "current": true,
-    });
-
     loadjs( jsfiles, {
 
         async: false,
@@ -212,8 +208,11 @@
                 });
             });
 
-
         //  avatarLoader.js (v6.4)
+
+            var dbUSER = new zango.Db( "USER", {
+                "current": true,
+            });
 
             localPlayerHandler("/turn/back");
             //  Disable outfit direction visible on startup.
