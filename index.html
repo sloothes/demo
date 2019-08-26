@@ -234,9 +234,8 @@
                 if ( localPlayer.outfit.getGender("male") ) {
 
                     male = outfit;  debugMode && console.log({"male":male});
-
-                    //  female.
-
+            /*
+                //  female.
                     (function(){
                         var json = {};
                         return db.collection("female").find().forEach(
@@ -255,13 +254,14 @@
                             debugMode && console.log({"female":female});
                         });
                     })();
+            */
 
                 } else if ( localPlayer.outfit.getGender("female") ) {
 
                     female = outfit;  debugMode && console.log({"female":female});
 
-                    //  male.
-
+            /*
+                //  male.
                     (function(){
                         var json = {};
                         return db.collection("male").find().forEach(
@@ -280,6 +280,7 @@
                             debugMode && console.log({"male":male});
                         });
                     })();
+            */
 
                 }
 
@@ -304,8 +305,8 @@
 
                             male = outfit;  debugMode && console.log({"male":male});
 
-                            //  female.
-
+            /*
+                        //  female.
                             (function(){
                                 var json = {};
                                 return db.collection("female").find().forEach(
@@ -324,13 +325,15 @@
                                     debugMode && console.log({"female":female});
                                 });
                             })();
+            */
+
 
                         } else if ( localPlayer.outfit.getGender("female") ) {
 
                             female = outfit;  debugMode && console.log({"female":female});
 
-                            //  male.
-
+            /*
+                         //  male.
                             (function(){
                                 var json = {};
                                 return db.collection("male").find().forEach(
@@ -349,6 +352,7 @@
                                     debugMode && console.log({"male":male});
                                 });
                             })();
+            */
 
                         }
 
