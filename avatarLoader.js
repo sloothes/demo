@@ -32,23 +32,37 @@
 
     //  Try localStorage.
 
-        var json = store("Avatar");
-        if (!json) throw "Avatar not found!";
+        return new Promise(function(resolve, reject){
 
-        localPlayer.outfit.fromJSON( json )
-        .then(function(outfit){
-            if ( localPlayer.outfit.getGender("male") )
-                male = outfit;
-            else if ( localPlayer.outfit.getGender("female") )
-                female = outfit;
-        }).then(function(){
+            var json = store("Avatar");
+            if (!json) throw "Avatar not found!";
+
+            resolve(json);
+
+        }).then(function(json){
+
+            localPlayer.outfit.fromJSON( json )
+            .then(function(outfit){
+                if ( localPlayer.outfit.getGender("male") )
+                    male = outfit;
+                else if ( localPlayer.outfit.getGender("female") )
+                    female = outfit;
+            }).catch(function(err){
+                console.log(err);
+                throw err;
+            });
+
+            return json;
+
+        }).then(function(json){
 
         //  Update database.
             json._id = "avatar";
-            collection.insert(json, function(err){
+            return collection.insert(json, function(err){
                 if (err) throw err;
             }).catch(function(err){
                 console.log(err);
+                throw err;
             });
 
         }).catch(function(err){
