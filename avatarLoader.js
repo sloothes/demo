@@ -41,18 +41,17 @@
 
         }).then(function(json){
 
-            localPlayer.outfit.fromJSON( json )
+            return localPlayer.outfit.fromJSON( json )
             .then(function(outfit){
                 if ( localPlayer.outfit.getGender("male") )
                     male = outfit;
                 else if ( localPlayer.outfit.getGender("female") )
                     female = outfit;
+                return json;
             }).catch(function(err){
                 console.log(err);
                 throw err;
             });
-
-            return json;
 
         }).then(function(json){
 
