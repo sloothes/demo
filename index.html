@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <meta name="description" contents="Slutty Ladies Observing Outgoing Trying Have Expressive Sex">
 
-    <title>demo scene (scc v4.0)</title>
+    <title>demo scene (scc v4.1)</title>
 
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootbox-dialoges.css">
@@ -76,6 +76,7 @@
 <div class="joystick-controls" id="joystick-controls-1"></div>
 <div class="joystick-controls" id="joystick-controls-2"></div>
 
+<!--
 <script src="/js/w3.js"></script>
 <script src="/js/rawinflate.js"></script>
 <script src="/js/rawdeflate.js"></script>
@@ -124,171 +125,355 @@
 <script src="/scene/action-helpers.js"></script>
 <script src="/scene/sceneHandler.js"></script>
 <script src="/scene/localPlayerHandler.js"></script>
+-->
 
 <script>
 
-//  avatarLoader.js (v6.4)
+    var jsfiles = [
+
+        "/js/w3.js",
+        "/js/rawinflate.js",
+        "/js/rawdeflate.js",
+        "/js/store2.js",
+        "/js/Objectid.js",
+        "/js/zangodb.min.js",
+        "/js/jquery.min.js",
+        "/js/jquery-ui.js",
+        "/js/jquery.Jcrop.js",
+        "/js/bootbox.min.js",
+        "/js/bootstrap.min.js",
+        "/js/DeviceDetector.js",
+        "/js/MathDecimalAdjustment.js",
+        "/js/watermark.js",
+        "/js/validator.js",
+        "/js/system.min.js",
+        "/js/signals.min.js",
+        "/js/command.js",
+        "/js/AW3D.db.js",
+        "/three/three.js",
+        "/three/EditorControls.js",
+        "/three/Detector.js",
+        "/three/Projector.js",
+        "/three/Animation.js",
+        "/three/AnimationHandler.js",
+        "/three/KeyFrameAnimation.js",
+        "/three/SubdivisionModifier.js",
+        "/three/UVsDebug.js",
+        "/three/shader.js",
+        "/js/MW.js",
+        "/js/MWtps.js",
+        "/js/VirtualInput.js",
+        "/js/scene-helpers.js",
+        "/js/edges-helpers.js",
+        "/scene/index.js",
+        "/scene/world.js",
+        "/AW3D/AW3D-dev0.3.9.js",
+        "/js/PlayerController.js",
+        "/js/cameraControl.js",
+        "/js/KeyInputControls.js",
+        "/js/JoystickControls.js",
+        "/js/jquery-update-engine.js",
+        "/js/jquery-render-engine.js",
+        "/scene/runtime.js",
+        "/js/animationsLoader.js",
+        "/scene/action-helpers.js",
+        "/scene/sceneHandler.js",
+        "/scene/localPlayerHandler.js",
+    ];
 
     var male, female, skeleton;
-
-    localPlayerHandler("/turn/back");
-//  Disable outfit direction visible on startup.
-//  localPlayer.outfit.direction.visible = false;
-
-(function(){
-
-//  IndexedDB first.
 
     var dbUSER = new zango.Db( "USER", {
         "current": true,
     });
 
-    var selector = {_id:"avatar"};
-    var collection = dbUSER.collection("current");
+    loadjs( jsfiles, {
 
-    collection.findOne(selector, function(err){
-        if (err) throw err;
-    }).then(function(json){
-        if (!json) throw "Current avatar not found!";
-        return localPlayer.outfit.fromJSON( json );
-    }).then(function(outfit){
-        if ( localPlayer.outfit.getGender("male") )
-            male = outfit;
-        else if ( localPlayer.outfit.getGender("female") )
-            female = outfit;
-    }).catch(function(err){
-        console.error(err);
+        async: false,
 
-    //  Try localStorage.
+        success: function(){
 
-        return new Promise(function(resolve, reject){
+        //  Loading bar.
 
-            var json = store("Avatar");
-            if (!json) throw "Avatar not found!";
-
-            resolve(json);
-
-        }).then(function(json){
-
-            return localPlayer.outfit.fromJSON( json )
-            .then(function(outfit){
-                if ( localPlayer.outfit.getGender("male") )
-                    male = outfit;
-                else if ( localPlayer.outfit.getGender("female") )
-                    female = outfit;
-                return json;
-            }).catch(function(err){
-                console.log(err);
-                throw err;
+            var dialog = window.bootbox.dialog({
+                message: `<div class="text-center meter orange">`
+                + `<span style="width:fit-content;padding-left:20px;padding-right:20px;">Loading...</span></div>`,
+                buttons: false,
+                closeButton: false,
+                className: "middle",
             });
 
-        }).then(function(json){
+            dialog.init(function(){
+            //  $( dialog.modal() ).find(".modal-body").css({"width":300});
+                $( dialog.modal() ).find(".modal-content").css({
+                    "border"    : "none",
+                    "box-shadow": "none",
+                    "background": "none",
+                });
+            });
 
-        //  Update database.
-            json._id = "avatar";
-            return collection.insert(json, function(err){
+
+        //  avatarLoader.js (v6.4)
+
+            localPlayerHandler("/turn/back");
+            //  Disable outfit direction visible on startup.
+            //  localPlayer.outfit.direction.visible = false;
+
+
+        //  LocalStorage first.
+
+            var selector = {_id:"avatar"};
+            var collection = dbUSER.collection("current");
+
+            collection.findOne(selector, function(err){
                 if (err) throw err;
+            }).then(function(json){
+                if (!json) throw "Current avatar not found!";
+                return localPlayer.outfit.fromJSON( json );
+            }).then(function(outfit){
+
+                if ( localPlayer.outfit.getGender("male") ) {
+
+                    male = outfit;  debugMode && console.log({"male":male});
+
+                    //  female.
+
+                    (function(){
+                        var json = {};
+                        return db.collection("female").find().forEach(
+                            function(doc){
+                                json[doc._id] = doc;
+                            }, 
+                            function(err){
+                                if (err) throw err;
+                            }
+                        ).catch(function(err){
+                            console.error(err);
+                        }).then(function(){
+                            return localPlayer.outfit.fromJSON(json);
+                        }).then(function(outfit){
+                            female = outfit;
+                            debugMode && console.log({"female":female});
+                        });
+                    })();
+
+                } else if ( localPlayer.outfit.getGender("female") ) {
+
+                    female = outfit;  debugMode && console.log({"female":female});
+
+                    //  male.
+
+                    (function(){
+                        var json = {};
+                        return db.collection("male").find().forEach(
+                            function(doc){
+                                json[doc._id] = doc;
+                            }, 
+                            function(err){
+                                if (err) throw err;
+                            }
+                        ).catch(function(err){
+                            console.error(err);
+                        }).then(function(){
+                            return localPlayer.outfit.fromJSON(json);
+                        }).then(function(outfit){
+                            male = outfit;
+                            debugMode && console.log({"male":male});
+                        });
+                    })();
+
             }).catch(function(err){
-                console.log(err);
-                throw err;
-            });
+                console.error(err);
 
-        }).catch(function(err){
-            console.error(err);
+            //  Try localStorage.
 
-        //  Drop to skinned mesh loader.
+                return new Promise(function(resolve, reject){
 
-            return Promise.resolve().then(function(){
+                    var json = store("Avatar");
+                    if (!json) throw "Avatar not found!";
 
-            //  male.
+                    resolve(json);
 
-                var json = {};
-                return db.collection("male").find().forEach(
-                    function(doc){
-                        json[doc._id] = doc;
-                    }, 
-                    function(err){
+                }).then(function(json){
+
+                    return localPlayer.outfit.fromJSON( json )
+                    .then(function(outfit){
+
+                        if ( localPlayer.outfit.getGender("male") ) {
+
+                            male = outfit;  debugMode && console.log({"male":male});
+
+                            //  female.
+
+                            (function(){
+                                var json = {};
+                                return db.collection("female").find().forEach(
+                                    function(doc){
+                                        json[doc._id] = doc;
+                                    }, 
+                                    function(err){
+                                        if (err) throw err;
+                                    }
+                                ).catch(function(err){
+                                    console.error(err);
+                                }).then(function(){
+                                    return localPlayer.outfit.fromJSON(json);
+                                }).then(function(outfit){
+                                    female = outfit;
+                                    debugMode && console.log({"female":female});
+                                });
+                            })();
+
+                        } else if ( localPlayer.outfit.getGender("female") ) {
+
+                            female = outfit;  debugMode && console.log({"female":female});
+
+                            //  male.
+
+                            (function(){
+                                var json = {};
+                                return db.collection("male").find().forEach(
+                                    function(doc){
+                                        json[doc._id] = doc;
+                                    }, 
+                                    function(err){
+                                        if (err) throw err;
+                                    }
+                                ).catch(function(err){
+                                    console.error(err);
+                                }).then(function(){
+                                    return localPlayer.outfit.fromJSON(json);
+                                }).then(function(outfit){
+                                    male = outfit;
+                                    debugMode && console.log({"male":male});
+                                });
+                            })();
+
+                        }
+
+                        return json;
+
+                    }).catch(function(err){
+                        console.log(err);
+                        throw err;
+                    });
+
+                }).then(function(json){
+
+                //  Update database.
+                    json._id = "avatar";
+                    return collection.insert(json, function(err){
                         if (err) throw err;
-                    }
-                ).catch(function(err){
-                    console.error(err);
-                }).then(function(){
-                    return localPlayer.outfit.fromJSON(json);
-                }).then(function(outfit){
-                    male = outfit;
-                    debugMode && console.log({"male":male});
-                    return;
-                });
+                    }).catch(function(err){
+                        console.log(err);
+                        throw err;
+                    });
 
-            }).then(function(){
-
-            //  female.
-
-                var json = {};
-                return db.collection("female").find().forEach(
-                    function(doc){
-                        json[doc._id] = doc;
-                    }, 
-                    function(err){
-                        if (err) throw err;
-                    }
-                ).catch(function(err){
-                    console.error(err);
-                }).then(function(){
-                    return localPlayer.outfit.fromJSON(json);
-                }).then(function(outfit){
-                    female = outfit;
-                    debugMode && console.log({"female":female});
-                    return;
-                });
-
-            }).then(function(){
-
-            //  skeleton.
-
-                return db.collection("skeleton")
-                .findOne({_id:"body"}, function(err){
-                    if (err) throw err;
-                }).then(function(doc){
-                    return doc;
                 }).catch(function(err){
                     console.error(err);
-                }).then(function(doc){
-                    return localPlayer.outfit.fromJSON({"skeleton":doc});
-                }).then(function(outfit){
-                    skeleton = outfit.skeleton;
-                    debugMode && console.log({"skeleton":skeleton});
-                    return;
+
+                //  Drop to skinned mesh loader.
+
+                    return Promise.resolve().then(function(){
+
+                    //  male.
+
+                        var json = {};
+                        return db.collection("male").find().forEach(
+                            function(doc){
+                                json[doc._id] = doc;
+                            }, 
+                            function(err){
+                                if (err) throw err;
+                            }
+                        ).catch(function(err){
+                            console.error(err);
+                        }).then(function(){
+                            return localPlayer.outfit.fromJSON(json);
+                        }).then(function(outfit){
+                            male = outfit;
+                            debugMode && console.log({"male":male});
+                            return;
+                        });
+
+                    }).then(function(){
+
+                    //  female.
+
+                        var json = {};
+                        return db.collection("female").find().forEach(
+                            function(doc){
+                                json[doc._id] = doc;
+                            }, 
+                            function(err){
+                                if (err) throw err;
+                            }
+                        ).catch(function(err){
+                            console.error(err);
+                        }).then(function(){
+                            return localPlayer.outfit.fromJSON(json);
+                        }).then(function(outfit){
+                            female = outfit;
+                            debugMode && console.log({"female":female});
+                            return;
+                        });
+
+                    }).then(function(){
+
+                    //  skeleton.
+
+                        return db.collection("skeleton")
+                        .findOne({_id:"body"}, function(err){
+                            if (err) throw err;
+                        }).then(function(doc){
+                            return doc;
+                        }).catch(function(err){
+                            console.error(err);
+                        }).then(function(doc){
+                            return localPlayer.outfit.fromJSON({"skeleton":doc});
+                        }).then(function(outfit){
+                            skeleton = outfit.skeleton;
+                            debugMode && console.log({"skeleton":skeleton});
+                            return;
+                        });
+
+                    }).then(function(){
+
+                    //  Drop to female avatar.
+                        localPlayerHandler("/gender/female");
+                        return;
+                    });
+
                 });
 
             }).then(function(){
 
-            //  Drop to female avatar.
-                localPlayerHandler("/gender/female");
-                return;
+            //  Startup.
+
+            //  Enable outfit direction visible.
+                localPlayer.outfit.direction.visible = true;
+
+            //  Hide loading bar.
+                if (window.bootbox) window.bootbox.hideAll();
+
             });
 
-        });
+        },
 
-    }).then(function(){
+        error: function(notfoundPaths){
 
-    //  Startup.
+            if (window.bootbox) window.bootbox.hideAll();
+            console.error("These files not found:", notfoundPaths);
 
-    //  Enable outfit direction visible.
-        localPlayer.outfit.direction.visible = true;
+        }
 
-    //  Hide loading bar.
-        if (window.bootbox) window.bootbox.hideAll();
-
-    });
-
-})();
+    );
 
 </script>
 
 
 <script>
-
+/*
 (function(){
 
 //  Loading bar.
@@ -311,13 +496,11 @@
     });
 
 })();
+*/
 
-</script>
-
-<script>
-
-//  Socketcluster.
 /*
+//  Socketcluster.
+
     var socket = socketCluster.create({
     //  port:443,
         hostname: "anywhere3d.com",
