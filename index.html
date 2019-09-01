@@ -129,7 +129,7 @@
 
 <script>
 
-    var jsfiles = [
+    var files = [
 
         "/js/w3.js",
         "/js/rawinflate.js",
@@ -183,9 +183,9 @@
 
     var male, female, skeleton;
 
-    loadjs( jsfiles, {
+    loadjs( files, {
 
-        async: false,
+        async: false, // important!
 
         success: function(){
 
@@ -193,19 +193,17 @@
 
             var dialog = window.bootbox.dialog({
                 message: `<div class="text-center meter orange">`
-                + `<span style="width:fit-content;padding-left:20px;padding-right:20px;">Loading...</span></div>`,
+                + `<span style="width:fit-content;color:#ffffff;`
+                + `font-weight:bold;">Loading...</span></div>`,
                 buttons: false,
                 closeButton: false,
                 className: "middle",
             });
 
-            dialog.init(function(){
-            //  $( dialog.modal() ).find(".modal-body").css({"width":300});
-                $( dialog.modal() ).find(".modal-content").css({
-                    "border"    : "none",
-                    "box-shadow": "none",
-                    "background": "none",
-                });
+            $( dialog.modal() ).find(".modal-content").css({
+                "border"    : "none",
+                "box-shadow": "none",
+                "background": "none",
             });
 
         //  avatarLoader.js (v6.4)
@@ -234,53 +232,10 @@
                 if ( localPlayer.outfit.getGender("male") ) {
 
                     male = outfit;  debugMode && console.log({"male":male});
-            /*
-                //  female.
-                    (function(){
-                        var json = {};
-                        return db.collection("female").find().forEach(
-                            function(doc){
-                                json[doc._id] = doc;
-                            }, 
-                            function(err){
-                                if (err) throw err;
-                            }
-                        ).catch(function(err){
-                            console.error(err);
-                        }).then(function(){
-                            return localPlayer.outfit.fromJSON(json);
-                        }).then(function(outfit){
-                            female = outfit;
-                            debugMode && console.log({"female":female});
-                        });
-                    })();
-            */
 
                 } else if ( localPlayer.outfit.getGender("female") ) {
 
                     female = outfit;  debugMode && console.log({"female":female});
-
-            /*
-                //  male.
-                    (function(){
-                        var json = {};
-                        return db.collection("male").find().forEach(
-                            function(doc){
-                                json[doc._id] = doc;
-                            }, 
-                            function(err){
-                                if (err) throw err;
-                            }
-                        ).catch(function(err){
-                            console.error(err);
-                        }).then(function(){
-                            return localPlayer.outfit.fromJSON(json);
-                        }).then(function(outfit){
-                            male = outfit;
-                            debugMode && console.log({"male":male});
-                        });
-                    })();
-            */
 
                 }
 
@@ -305,54 +260,9 @@
 
                             male = outfit;  debugMode && console.log({"male":male});
 
-            /*
-                        //  female.
-                            (function(){
-                                var json = {};
-                                return db.collection("female").find().forEach(
-                                    function(doc){
-                                        json[doc._id] = doc;
-                                    }, 
-                                    function(err){
-                                        if (err) throw err;
-                                    }
-                                ).catch(function(err){
-                                    console.error(err);
-                                }).then(function(){
-                                    return localPlayer.outfit.fromJSON(json);
-                                }).then(function(outfit){
-                                    female = outfit;
-                                    debugMode && console.log({"female":female});
-                                });
-                            })();
-            */
-
-
                         } else if ( localPlayer.outfit.getGender("female") ) {
 
                             female = outfit;  debugMode && console.log({"female":female});
-
-            /*
-                         //  male.
-                            (function(){
-                                var json = {};
-                                return db.collection("male").find().forEach(
-                                    function(doc){
-                                        json[doc._id] = doc;
-                                    }, 
-                                    function(err){
-                                        if (err) throw err;
-                                    }
-                                ).catch(function(err){
-                                    console.error(err);
-                                }).then(function(){
-                                    return localPlayer.outfit.fromJSON(json);
-                                }).then(function(outfit){
-                                    male = outfit;
-                                    debugMode && console.log({"male":male});
-                                });
-                            })();
-            */
 
                         }
 
@@ -562,8 +472,53 @@
         debugMode && console.log(`subscribed successfully to "${name}" channel:`, object);
     });
 */
-</script>
 
+/*
+//  female.
+    (function(){
+        var json = {};
+        return db.collection("female").find().forEach(
+            function(doc){
+                json[doc._id] = doc;
+            }, 
+            function(err){
+                if (err) throw err;
+            }
+        ).catch(function(err){
+            console.error(err);
+        }).then(function(){
+            return localPlayer.outfit.fromJSON(json);
+        }).then(function(outfit){
+            female = outfit;
+            debugMode && console.log({"female":female});
+        });
+    })();
+*/
+
+/*
+//  male.
+    (function(){
+        var json = {};
+        return db.collection("male").find().forEach(
+            function(doc){
+                json[doc._id] = doc;
+            }, 
+            function(err){
+                if (err) throw err;
+            }
+        ).catch(function(err){
+            console.error(err);
+        }).then(function(){
+            return localPlayer.outfit.fromJSON(json);
+        }).then(function(outfit){
+            male = outfit;
+            debugMode && console.log({"male":male});
+        });
+    })();
+*/
+
+</script>
 
 </body>
 </html>
+
