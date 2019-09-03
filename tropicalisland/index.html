@@ -176,9 +176,11 @@
             //  Load scripts as blob URLs.
                 internalScirpts.forEach(function(url){
                     var loader = new THREE.XHRLoader();
-                    loader.load(url, function(text){
-                        var blob = new Blob( [ text ], {type: "application/javascript"} ); // or "text/javascript" ???
-                        return URL.createObjectURL(blob);
+                    loader.setResponseType("blob");
+                    loader.load(url, function(blob){
+                        console.log(blob);
+                    //  var blob = new Blob( [ text ], {type: "application/javascript"} ); // or "text/javascript" ???
+                        console.log( URL.createObjectURL(blob) );
                     });
                 });
 
