@@ -154,10 +154,11 @@
 				var player = new APP.Player();
 				player.load( json );
 				player.setSize( window.innerWidth, window.innerHeight );
+                player.play();
 
 				document.body.appendChild( player.dom );
 
-                loadjs([
+                var internalScirpts = [
 
                     "/js/PlayerController.js",
                     "/js/cameraControl.js",
@@ -170,13 +171,15 @@
                     "/scene/localPlayerHandler.js",
                     "/scene/skinnedMeshLoader.js",
 
-                ], {
-                    async: false,
-                    success: function(){
-                        player.play();
-                        bootbox.hideAll();
-                        console.log("additional in-scene scripts loaded.");
-                    }
+                ];
+
+            //  Load scripts as blob URLs.
+                internalScirpts.forEach(function(url){
+                    var loader = new THREE.XHRLoader();
+                    loader.load(url, function(text){
+                        var blob = new Blob( [ text ], {type: "application/javascript"} ); // or "text/javascript" ???
+                        return URL.createObjectURL(blob);
+                    });
                 });
 
 
