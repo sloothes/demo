@@ -83,7 +83,7 @@
 
         <script>
 
-            debugMode = false;
+            debugMode = true;
 
             console.log({
                 "debug": debugMode,
@@ -179,8 +179,7 @@
                 //  loader.setResponseType("blob");
                     loader.load(url, function(text){
                         var blob = new Blob( [ text ], {type: "text/javascript"} ); // or "application/javascript" ???
-                        console.log(blob);
-                        console.log( URL.createObjectURL(blob) );
+                        console.log( blob, URL.createObjectURL(blob) );
                     });
                 });
 
