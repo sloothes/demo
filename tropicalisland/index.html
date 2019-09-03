@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>small tropical island demo</title>
+		<title>small tropical island</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -144,17 +144,6 @@
 
 		<script src="js/app.js"></script>
 
-        <script src="/js/PlayerController.js"></script>
-    <!-- script src="/js/cameraControl.js"></script -->
-        <script src="/js/KeyInputControls.js"></script>
-        <script src="/js/JoystickControls.js"></script>
-        <script src="/js/animationsLoader.js"></script>
-        <script src="/scene/world.js"></script>
-        <script src="/scene/action-helpers.js"></script>
-        <script src="/scene/sceneHandler.js"></script>
-        <script src="/scene/localPlayerHandler.js"></script>
-    <!-- script src="/scene/skinnedMeshLoader.js"></script -->
-
 		<script>
 
 			var loader = new THREE.XHRLoader();
@@ -169,7 +158,27 @@
 
 				document.body.appendChild( player.dom );
 
-                bootbox.hideAll();
+                loadJS([
+
+                    "/js/PlayerController.js",
+                    "/js/cameraControl.js",
+                    "/js/KeyInputControls.js",
+                    "/js/JoystickControls.js",
+                    "/js/animationsLoader.js",
+                    "/scene/world.js",
+                    "/scene/action-helpers.js",
+                    "/scene/sceneHandler.js",
+                    "/scene/localPlayerHandler.js",
+                    "/scene/skinnedMeshLoader.js",
+
+                ], {
+                    async: false,
+                    success: function(){
+                        bootbox.hideAll();
+                        console.log("additional in-scene scripts loaded.");
+                    }
+                );
+
 
 				if ( json.project.editable === true ) {
 
@@ -193,5 +202,19 @@
 			});
 
 		</script>
+
+    <!--
+        <script src="/js/PlayerController.js"></script>
+        <script src="/js/cameraControl.js"></script>
+        <script src="/js/KeyInputControls.js"></script>
+        <script src="/js/JoystickControls.js"></script>
+        <script src="/js/animationsLoader.js"></script>
+        <script src="/scene/world.js"></script>
+        <script src="/scene/action-helpers.js"></script>
+        <script src="/scene/sceneHandler.js"></script>
+        <script src="/scene/localPlayerHandler.js"></script>
+        <script src="/scene/skinnedMeshLoader.js"></script>
+    -->
+
 	</body>
 </html>
