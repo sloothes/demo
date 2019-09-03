@@ -154,7 +154,6 @@
 				var player = new APP.Player();
 				player.load( json );
 				player.setSize( window.innerWidth, window.innerHeight );
-				player.play();
 
 				document.body.appendChild( player.dom );
 
@@ -174,6 +173,7 @@
                 ], {
                     async: false,
                     success: function(){
+                        player.play();
                         bootbox.hideAll();
                         console.log("additional in-scene scripts loaded.");
                     }
