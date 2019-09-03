@@ -181,7 +181,7 @@
                         var blob = new Blob( [ text ], {type: "text/javascript"} ); // or "application/javascript" ???
                         var script = document.createElement("script");
                         script.onload = function(){
-                            debugMode && console.log("script loaded:", url); //  callback();
+                            debugMode && console.log("script loaded:", script.url); //  callback();
                         }; script.src = URL.createObjectURL(blob);
                         document.body.appendChild(script);
                     });
