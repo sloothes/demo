@@ -179,7 +179,10 @@
                 //  loader.setResponseType("blob");
                     loader.load(url, function(text){
                         var blob = new Blob( [ text ], {type: "text/javascript"} ); // or "application/javascript" ???
-                        console.log( blob, URL.createObjectURL(blob) );
+                        var script = document.createElement("script");
+                        script.src = URL.createObjectURL(blob);
+                        debugMode && console.log( blob, script.src );
+                        document.body.appendChild(script)
                     });
                 });
 
