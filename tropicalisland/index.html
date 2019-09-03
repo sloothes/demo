@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js</title>
+		<title>small tropical island demo</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bootbox-dialoges.css">
+
 		<style>
 		body {
 			font-family: Helvetica, Arial, sans-serif;
@@ -26,16 +29,96 @@
 			opacity: 1;
 		}
 		</style>
+
+        <script src="/js/w3.js"></script>
+        <script src="/js/loadjs.min.js"></script>
+        <script src="/socketcluster.js"></script>
+        <script src="/sc-codec-min-bin.js"></script>
+        <script src="/js/rawinflate.js"></script>
+        <script src="/js/rawdeflate.js"></script>
+        <script src="/js/store2.js"></script>
+        <script src="/js/Objectid.js"></script>
+        <script src="/js/zangodb.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/jquery-ui.js"></script>
+        <script src="/js/jquery.Jcrop.js"></script>
+        <script src="/js/bootbox.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/DeviceDetector.js"></script>
+        <script src="/js/MathDecimalAdjustment.js"></script>
+        <script src="/js/watermark.js"></script>
+        <script src="/js/validator.js"></script>
+        <script src="/js/system.min.js"></script>
+        <script src="/js/signals.min.js"></script>
+        <script src="/js/command.js"></script>
+        <script src="/js/AW3D.db.js"></script>
+
 	</head>
+
 	<body ontouchstart="">
+
+        <div class="joystick-controls" id="joystick-controls-1"></div>
+        <div class="joystick-controls" id="joystick-controls-2"></div>
+
+        <script>
+
+            (function(){
+
+            //  Loading bar.
+
+                var dialog = window.bootbox.dialog({
+                    message: `<div class="text-center">`
+                    + `<span style="width:300px;font-weight:bold;`
+                    + `color:#fff;">Loading...</span></div>`,
+                    buttons: false,
+                    closeButton: false,
+                    className: "middle",
+                });
+
+                $( dialog.modal() ).find(".modal-content").css({
+                    "border"    : "none",
+                    "box-shadow": "none",
+                    "background": "none",
+                });
+
+            })();
+
+        </script>
+
 		<script src="js/three.min.js"></script>
         <script src="/three/EditorControls.js"></script>
+        <script src="/three/Detector.js"></script>
+        <script src="/three/Projector.js"></script>
+        <script src="/three/Animation.js"></script>
+        <script src="/three/AnimationHandler.js"></script>
+        <script src="/three/KeyFrameAnimation.js"></script>
+        <script src="/three/SubdivisionModifier.js"></script>
+        <script src="/three/UVsDebug.js"></script>
+        <script src="/three/shader.js"></script>
+        <script src="/js/MW.js"></script>
+        <script src="/js/MWtps.js"></script>
+        <script src="/js/VirtualInput.js"></script>
+        <script src="/js/scene-helpers.js"></script>
+        <script src="/js/edges-helpers.js"></script>
+        <script src="/AW3D/AW3D-dev0.3.9.js"></script>
+
 		<script src="js/app.js"></script>
-		
+
+        <script src="/js/PlayerController.js"></script>
+        <script src="/js/cameraControl.js"></script>
+        <script src="/js/KeyInputControls.js"></script>
+        <script src="/js/JoystickControls.js"></script>
+        <script src="/js/animationsLoader.js"></script>
+        <script src="/scene/world.js"></script>
+        <script src="/scene/action-helpers.js"></script>
+        <script src="/scene/sceneHandler.js"></script>
+        <script src="/scene/localPlayerHandler.js"></script>
+    <!-- script src="/scene/skinnedMeshLoader.js"></script -->
+
 		<script>
 
 			var loader = new THREE.XHRLoader();
-			loader.load( 'app.json', function ( text ) {
+			loader.load( "app.json", function ( text ) {
 
 				var json = JSON.parse( text );
 
@@ -46,26 +129,28 @@
 
 				document.body.appendChild( player.dom );
 
+                bootbox.hideAll();
+
 				if ( json.project.editable === true ) {
 
-					var button = document.createElement( 'div' );
-					button.id = 'edit';
-					button.textContent = 'EDIT';
-					button.addEventListener( 'click', function ( event ) {
+					var button = document.createElement( "div" );
 
-						var url = location.href.split( '/' ).slice( 0, - 1 ).join( '/' );
-						window.open( 'http://threejs.org/editor/#file=' + url + '/app.json' );
-
+					button.id = "edit";
+					button.textContent = "EDIT";
+					button.addEventListener( "click", function ( event ) {
+						var url = location.href.split( "/" ).slice( 0, - 1 ).join( "/" );
+						window.open( "http://sloothes/three/r78/editor/#file=" + url + "/app.json" );
 					}, false );
+
 					document.body.appendChild( button );
 
 				}
 
-				window.addEventListener( 'resize', function () {
+				window.addEventListener( "resize", function () {
 					player.setSize( window.innerWidth, window.innerHeight );
-				} );
+				});
 
-			} );
+			});
 
 		</script>
 	</body>
