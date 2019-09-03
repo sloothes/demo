@@ -157,7 +157,8 @@
                 player.play();
 
 				document.body.appendChild( player.dom );
-                
+
+            /*
                 var internalScirpts = [
 
                     "/js/PlayerController.js",
@@ -182,10 +183,10 @@
                         script.onload = function(){
                             debugMode && console.log("script loaded:", url); //  callback();
                         }; script.src = URL.createObjectURL(blob);
-                        //  document.body.appendChild(script);
+                        document.body.appendChild(script);
                     });
                 });
-
+            */
 
 				if ( json.project.editable === true ) {
 
