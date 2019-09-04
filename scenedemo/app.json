@@ -1,0 +1,51 @@
+{
+	"metadata": {
+		"type": "App"
+	},
+	"project": {
+		"shadows": true,
+		"editable": false,
+		"vr": false
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.4,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "A2C2C7F3-5B22-4091-AA53-B6CCEE267F87",
+			"type": "PerspectiveCamera",
+			"name": "Camera",
+			"matrix": [0.7071067690849304,-2.0417514345894006e-9,-0.7071067690849304,0,-0.2357022613286972,0.9428090453147888,-0.2357022613286972,0,0.6666666865348816,0.3333333432674408,0.6666666865348816,0,20,10,20,1],
+			"fov": 50,
+			"zoom": 1,
+			"near": 1,
+			"far": 10000,
+			"focus": 10,
+			"aspect": 1.8528735632183908,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"scene": {
+		"metadata": {
+			"version": 4.4,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "BCC3A53B-07C6-4FC3-B308-8F4A3E94469D",
+			"type": "Scene",
+			"name": "Scene",
+			"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+		}
+	},
+	"scripts": {
+		"BCC3A53B-07C6-4FC3-B308-8F4A3E94469D": [
+			{
+				"name": "scene.js",
+				"source": "//  scene.js\n\n    var fontFolder = \"/three/fonts/\";\n    var fontPath = \"/three/fonts/helvetiker_regular.typeface.json\";\n\n    var sceneContainerSelector = \"#scene-container\";\n    var renderContainerSelector = \"#scene-container\";\n    var rendererContainerSelector = \"#scene-container\";\n\n    var sceneContainer = document.getElementById(\"scene-container\");\n    var renderContainer = document.getElementById(\"scene-container\");\n    var rendererContainer = document.getElementById(\"scene-container\");\n    var domElementContainer = document.getElementById(\"scene-container\");\n\n    var scene, \n        camera, \n        renderer, \n        controls;\n\n    var sunLight,\n        sceneLights,\n        shadowHelper,\n        ambientLight,\n        groundHelper,\n        axisCustomHelper, \n        axisOriginHelper;\n\n    var projector, \n        keyboard, \n        clock,\n        mouse;\n\n    function sceneBackground( urls ){\n        if (!scene || Number(THREE.REVISION) < 78) return;\n        var loader = new THREE.CubeTextureLoader();\n        loader.load( urls, function(texture){\n            scene.background = texture;\n            scene.background.needsUpdate = true;\n        });\n    }\n\nfunction init(){\n\n    scene.name = \"DEFAULT SCENE\";\n    scene.fog = new THREE.FogExp2(0xb1c8e8, 0.00075);\n\n//  Background.\n\n    sceneBackground([\n        \"https://i.imgur.com/v6bjQLb.jpg\", // \"posx.jpg\",\n        \"https://i.imgur.com/lwrlr6P.jpg\", // \"negx.jpg\", \n        \"https://i.imgur.com/kKUKBJg.jpg\", // \"posy.jpg\", \n        \"https://i.imgur.com/N0oZlJR.jpg\", // \"negy.jpg\", \n        \"https://i.imgur.com/x9q8z0K.jpg\", // \"posz.jpg\", \n        \"https://i.imgur.com/HYcK7Ii.jpg\", // \"negz.jpg\"\n    ]);\n\n    camera.position.set(0, 20, 100);\n\n\tcontrols = new THREE.EditorControls(camera);\n//  if ( controls && controls instanceof THREE.EditorControls ) {\n//      camera.lookAt(controls.center); // important!\n//  }\n\n    ambientLight = new THREE.AmbientLight(0x666666);\n    scene.add(ambientLight);\n\n//  Shadow Light.\n\n    sunLight = new THREE.DirectionalLight( 0xdfebff, 0.75 );\n    sunLight.position.set( 0, 500, 300 );\n    sunLight.position.multiplyScalar( 1.5 );\n    sunLight.castShadow = true;\n    sunLight.shadow.mapSize.width  = Math.pow(2, 10); // 2048;\n    sunLight.shadow.mapSize.height = Math.pow(2, 10); // 2048;\n\n    var d = 30;\n    sunLight.shadow.camera.left = - d;\n    sunLight.shadow.camera.right = d;\n    sunLight.shadow.camera.top = d;\n    sunLight.shadow.camera.bottom = - d;\n    sunLight.shadow.camera.far = 10000;\n\n    shadowHelper = new THREE.CameraHelper(sunLight.shadow.camera);\n    shadowHelper.visible = false;\n\n    scene.add( sunLight, shadowHelper  );\n\n    clock = new THREE.Clock();\n    projector = new THREE.Projector();\n\n    renderer = new THREE.WebGLRenderer({\n        antialias: true,\n        preserveDrawingBuffer: true,\n    });\n\n//  Renderer.\n\n    renderer.gammaInput = true;\n    renderer.gammaOutput = true;\n    renderer.shadowMap.enabled = true;\n    renderer.setClearColor( scene.fog.color );\n    renderer.setPixelRatio( window.devicePixelRatio );\n\n//  Event Listeners.\n\n    mouse = new THREE.Vector2();\n\n    var rendererHalfWidth  = renderer.domElement.width * 0.5;\n    var rendererHalfHeight = renderer.domElement.height * 0.5;\n\n//\twindow.addEventListener(\"resize\", onWindowResize);//   window.addEventListener(\"mousemove\", onMouseMove);\n\n    function onWindowResize() {\n        camera.aspect = container.clientWidth / container.clientHeight;\n        camera.updateProjectionMatrix();\n        renderer.setSize( container.clientWidth, container.clientHeight );\n        rendererHalfWidth = renderer.domElement.width * 0.5;\n        rendererHalfHeight = renderer.domElement.height * 0.5;\n    }\n\n    function onMouseMove(e) {\n        mouse.x = ( e.clientX - rendererHalfWidth );\n        mouse.y = ( e.clientY - rendererHalfHeight );\n    }\n\n}\n\nfunction update( event ) {}"
+			}]
+	}
+}
