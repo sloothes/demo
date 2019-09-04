@@ -6,9 +6,11 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link rel="stylesheet" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/css/bootbox-dialoges.css">
-		<link rel="stylesheet" href="/css/jquery.Jcrop.css">
+        <link rel="stylesheet" href="/css/joystick.css">
+        <link rel="stylesheet" href="/css/meter.css">
 
 		<style>
+
 			body {
 				font-family: Helvetica, Arial, sans-serif;
 				font-size: 12px;
@@ -16,6 +18,7 @@
 				margin: 0px;
 				overflow: hidden;
 			}
+
 			#edit {
 				position: absolute;
 				bottom: 20px;
@@ -25,10 +28,21 @@
 				background-color: #fff;
 				opacity: 0.5;
 			}
+
 			#edit:hover {
 				cursor: pointer;
 				opacity: 1;
 			}
+
+            .middle > * {
+                margin:auto;
+                position:absolute;
+                top:0; bottom:0;
+                left:0; right:0;
+                height:fit-content;
+                width:fit-content;
+            }
+
 		</style>
 
 		<script>var debugMode = false;</script>
@@ -54,6 +68,33 @@
 
 	</head>
 	<body ontouchstart="">
+
+        <script>
+
+            (function(){
+
+            //  Loading bar.
+
+                var dialog = window.bootbox.dialog({
+                    message: `<div class="text-center">`
+                    + `<span style="width:300px;font-weight:bold;`
+                    + `color:#fff;">Loading...<br>Please wait... `
+                    + `(heavy duty)</span></div>`,
+                    buttons: false,
+                    closeButton: false,
+                    className: "middle",
+                });
+
+                $( dialog.modal() ).find(".modal-content").css({
+                    "border"    : "none",
+                    "box-shadow": "none",
+                    "background": "none",
+                });
+
+            })();
+
+        </script>
+
 		<script src="js/three.min.js"></script>
 		<script src="/three/EditorControls.js"></script>
 		<script src="/three/Detector.js"></script>
@@ -105,6 +146,8 @@
 				window.addEventListener( 'resize', function () {
 					player.setSize( window.innerWidth, window.innerHeight );
 				} );
+
+                bootbox.hideAll();
 
 			} );
 
