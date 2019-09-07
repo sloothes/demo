@@ -4,7 +4,7 @@
 	},
 	"project": {
 		"shadows": true,
-		"editable": true,
+		"editable": false,
 		"vr": false
 	},
 	"camera": {
@@ -173,14 +173,6 @@
 				"source": "//\tmale-animation.js\n\nFemaleAnimations = {}; // object.\n\nvar loader = new THREE.XHRLoader();\nloader.setResponseType( \"json\" );\nloader.load(\"/AW3D_db/animations.json\", function(results){\n\n\t//  returns an array of objects!\n\n\tvar json = results.find(function(item){\n\t\treturn item._id == \"female\";\n\t});\n\n\tdebugMode && console.log(\"female:\", json);\n\n\tfor (var name in json){\n\t\tif ( name != \"_id\" ) FemaleAnimations[name] = json[name];\n\t}\n\n});"
 			}],
 		"6AD93A00-35BA-4603-8634-129EA23AF066": [
-			{
-				"name": "male-mesh-loader.js",
-				"source": "var loader = new THREE.XHRLoader();\nloader.setResponseType( \"json\" );\nloader.load(\"/AW3D_db/male.json\", function(data){\n\tconsole.log(\"male:\", data);\n});"
-			},
-			{
-				"name": "female-mesh-loader.js",
-				"source": "var loader = new THREE.XHRLoader();\nloader.setResponseType( \"json\" );\nloader.load(\"/AW3D_db/female.json\", function(data){\n\tconsole.log(\"female:\", data);\n});"
-			},
 			{
 				"name": "skeleton-mesh-loader.js",
 				"source": "skeleton = {}; // important!\n\nvar loader = new THREE.XHRLoader();\nvar url = \"/skinned/skeleton/skeleton.json\";\nloader.setResponseType( \"json\" );\nloader.load(url, function(json){\n\n\tdebugMode && console.log(\"skeleton:\", json);\n\n\tvar loader = new THREE.JSONLoader();\n\tvar object = loader.parse( json );\n\n\tdebugMode && console.log(\"object:\", object);\n\n\tvar geometry = object.geometry;\n\tgeometry.sourceFile = url;  // important!\n\tgeometry.name = json.name + \".geometry\";\n\tgeometry.computeFaceNormals();\n\tgeometry.computeVertexNormals();\n\tgeometry.computeBoundingBox();\n\tgeometry.computeBoundingSphere();\n\n\tvar material = new THREE.MeshLambertMaterial({\n\t\tside: 0,\n\t\topacity: 1,\n\t\tshading: 2,\n\t\temissive: 0,\n\t\tskinning: true,\n\t\tcolor: 16777215,\n\t\ttransparent: false,\n\t\tname: \"HF_SkeletonMaterial\",\n\t});\n\n\tvar skinned = new THREE.SkinnedMesh( geometry, material );\n\n\tskinned.renderDepth = 1;\n\tskinned.frustumCulled = false;\n\tskinned.position.set( 0, 0, 0 );\n\tskinned.rotation.set( 0, 0, 0 );\n\tskinned.scale.set( 1,1,1 );\n\tskinned.castShadow = true;\n\tskinned.name = json.name;\n\n\tskeleton = skinned; // important!\n\tlocalPlayer.outfit.add({\"skeleton\":skeleton});\n\n});\n\n/*\nfunction init(){\n//\tAdd to scene. (debugging)\n\tvar data = {\n\t\tgeometry: \"/skinned/skeleton/skeleton.json\",\n\t\tmaterial: {\n\t\t\tcolor: 16777215,\n\t\t\temissive: 0,\n\t\t\tname: \"HF_SkeletonMaterial\",\n\t\t\topacity: 1,\n\t\t\tshading: 2,\n\t\t\tside: 0,\n\t\t\tskinning: true,\n\t\t\ttransparent: false,\n\t\t\ttype: \"MeshLambertMaterial\",\n\t\t},\n\t\tname: \"body\",\n\t\tscale: [1, 1, 1],\n\t\tvisible: true,\n\t};\n\n\tlocalPlayer.outfit.fromJSON({\"skeleton\":data});\n}\n*/"
