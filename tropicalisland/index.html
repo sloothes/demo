@@ -60,10 +60,10 @@
             //  Loading bar.
 
                 var dialog = window.bootbox.dialog({
-                    message: `<div class="text-center">`
-                    + `<span style="width:300px;font-weight:bold;`
-                    + `color:#fff;">Loading...<br>Please wait... `
-                    + `(heavy duty)</span></div>`,
+                    message: '<div class="text-center">'
+                    + '<span style="width:300px;font-weight:bold;'
+                    + 'color:#fff;">Loading...<br>Please wait... '
+                    + '(heavy duty)</span></div>',
                     buttons: false,
                     closeButton: false,
                     className: "middle",
@@ -99,13 +99,13 @@
 
 				if ( json.project.editable === true ) {
 
-					var button = document.createElement( 'div' );
+					var button = document.createElement( "div" );
 					button.id = "edit";
 					button.textContent = "EDIT";
 					button.addEventListener( "click", function ( event ) {
 
-						var url = location.href.split( "/" ).slice( 0, - 1 ).join( '/' );
-						window.open( `https://sloothes.com/three/r78/editor/#file=${url}/app.json` );
+						var url = location.href.split( "/" ).slice( 0, - 1 ).join( "/" );
+						window.open( "https://sloothes.com/three/r78/editor/#file=" + url + "/app.json` );
 
 					}, false );
 					document.body.appendChild( button );
