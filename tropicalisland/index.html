@@ -45,45 +45,24 @@
 
 		</style>
 
-        <script src="/js/jquery.min.js"></script>
-        <script src="/js/bootbox.min.js"></script>
-        <script src="/js/bootstrap.min.js"></script>
+		<script src="/socketcluster.js"></script>
+		<script src="/sc-codec-min-bin.js"></script>
+		<script src="/js/jquery.min.js"></script>
+		<script src="/js/bootbox.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<script src="/js/signals.min.js"></script>
+		<script src="/three/three.min.js"></script>
+		<script src="/three/EditorControls.js"></script>
 
 	</head>
 
 	<body ontouchstart="">
 
-        <script>
-
-            (function(){
-
-            //  Loading bar.
-
-                var dialog = window.bootbox.dialog({
-                    message: '<div class="text-center">'
-                    + '<span style="width:300px;font-weight:bold;'
-                    + 'color:#fff;">Loading...<br>Please wait... '
-                    + '(heavy duty)</span></div>',
-                    buttons: false,
-                    closeButton: false,
-                    className: "middle",
-                });
-
-                $( dialog.modal() ).find(".modal-content").css({
-                    "border"    : "none",
-                    "box-shadow": "none",
-                    "background": "none",
-                });
-
-            })();
-
-        </script>
-
-		<script src="js/three.min.js"></script>
-        <script src="/three/EditorControls.js"></script>
 		<script src="js/app.js"></script>
 		
 		<script>
+
+			bootboxLoading();
 
 			var loader = new THREE.XHRLoader();
 			loader.load( "app.json", function ( text ) {
@@ -119,6 +98,28 @@
                 bootbox.hideAll();
 
 			});
+
+			function bootboxLoading(){
+
+			//  Loading bar.
+
+				var dialog = window.bootbox.dialog({
+					message: "<div class=\"text-center\">"
+					+ "<h2 style=\"width:fit-content;font-weight:bold;"
+					+ "color:#fff;text-align:center;\">Loading<br>"
+					+ "Please wait...<br>(heavy duty)</h2></div>",
+					buttons: false,
+					closeButton: false,
+					className: "middle",
+				});
+
+				$( dialog.modal() ).find(".modal-content").css({
+                    "border"    : "none",
+                    "box-shadow": "none",
+                    "background": "none",
+				});
+
+			}
 
 		</script>
 	</body>
