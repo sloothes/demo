@@ -67,36 +67,6 @@
 		<script src="/js/signals.min.js"></script>
 		<script src="/js/command.js"></script>
 		<script src="/js/AW3D.db.js"></script>
-
-	</head>
-	<body ontouchstart="">
-
-        <script>
-
-            (function(){
-
-            //  Loading bar.
-
-                var dialog = window.bootbox.dialog({
-                    message: `<div class="text-center">`
-                    + `<span style="width:300px;font-weight:bold;`
-                    + `color:#fff;">Loading...<br>Please wait... `
-                    + `(heavy duty)</span></div>`,
-                    buttons: false,
-                    closeButton: false,
-                    className: "middle",
-                });
-
-                $( dialog.modal() ).find(".modal-content").css({
-                    "border"    : "none",
-                    "box-shadow": "none",
-                    "background": "none",
-                });
-
-            })();
-
-        </script>
-
 		<script src="js/three.min.js"></script>
 		<script src="/three/EditorControls.js"></script>
 		<script src="/three/Detector.js"></script>
@@ -114,12 +84,17 @@
 		<script src="/js/edges-helpers.js"></script>
 		<script src="/AW3D/AW3D-dev0.3.9.js"></script>
 
+	</head>
+	<body ontouchstart="">
+
 		<script src="js/app.js"></script>
 		
 		<script>
 
+			bootboxLoading();
+
 			var loader = new THREE.XHRLoader();
-			loader.load( 'app.json', function ( text ) {
+			loader.load( "app.json", function ( text ) {
 
 				var json = JSON.parse( text );
 
@@ -132,26 +107,48 @@
 
 				if ( json.project.editable === true ) {
 
-					var button = document.createElement( 'div' );
-					button.id = 'edit';
-					button.textContent = 'EDIT';
-					button.addEventListener( 'click', function ( event ) {
+					var button = document.createElement( "div" );
+					button.id = "edit";
+					button.textContent = "EDIT";
+					button.addEventListener( "click", function ( event ) {
 
-						var url = location.href.split( '/' ).slice( 0, - 1 ).join( '/' );
-						window.open( 'http://threejs.org/editor/#file=' + url + '/app.json' );
+						var url = location.href.split( "/" ).slice( 0, - 1 ).join( "/" );
+						window.open( "https://sloothes.com/three/r78/editor/#file=" + url + "/app.json" );
 
 					}, false );
 					document.body.appendChild( button );
 
 				}
 
-				window.addEventListener( 'resize', function () {
+				window.addEventListener( "resize", function () {
 					player.setSize( window.innerWidth, window.innerHeight );
-				} );
+				});
 
                 bootbox.hideAll();
 
-			} );
+			});
+
+			function bootboxLoading(){
+
+			//  Loading bar.
+
+				var dialog = window.bootbox.dialog({
+					message: "<div class=\"text-center\">"
+					+ "<h2 style=\"width:fit-content;font-weight:bold;"
+					+ "color:#fff;text-align:center;\">Loading<br>"
+					+ "Please wait...<br>(heavy duty)</h2></div>",
+					buttons: false,
+					closeButton: false,
+					className: "middle",
+				});
+
+				$( dialog.modal() ).find(".modal-content").css({
+                    "border"    : "none",
+                    "box-shadow": "none",
+                    "background": "none",
+				});
+
+			}
 
 		</script>
 	</body>
