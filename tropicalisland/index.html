@@ -64,11 +64,23 @@
 
 			bootboxLoading();
 
-			var loader = new THREE.XHRLoader();
-			loader.manager.onProgress = function(a, b, c, d){
+			var manager = new THREE.LoadingManager();
+
+			manager.onLoad = function(a){
+				console.log( a );
+			};
+
+			manager.onProgress = function(a, b, c, d){
 				console.log( "loading...", a, b, c, d );
 			};
 
+			manager.onError = function(err){
+				console.error( err );
+			};
+
+			console.log( "manager:", manager );
+
+			var loader = new THREE.XHRLoader( manager );
 			loader.load( "app.json", function ( text ) {
 
 				var json = JSON.parse( text );
