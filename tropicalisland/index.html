@@ -124,17 +124,22 @@
 					var loaded = e.loaded / 1024; // (KB)
 					var total  = e.total / Math.pow(1024, 2); // (MB)
 
+					console.log( "on progress:", loaded.toFixed(2), "KB of", total.toFixed(2), "MB loaded." );
+
 					var percent = e.loaded * 100 / e.total;
 					$("#loaded").text( loaded.toFixed(0) + "%");
 
-					console.log( "on progress:", loaded.toFixed(2), "KB of", total.toFixed(2), "MB loaded." );
 
 				} else {
 
 					var loaded = e.loaded / 1024;
-					$("#loaded").text( loaded.toFixed(0) + " KB");
+				//	$("#loaded").text( loaded.toFixed(0) + " KB");
 
 					console.log( "on progress:", loaded.toFixed(2), "Kb loaded." );
+
+					var total = 26238314;
+					var percent = e.loaded * 100 / total;
+					$("#loaded").text( loaded.toFixed(0) + "%");
 				}
 
 			}, function onError(err){
