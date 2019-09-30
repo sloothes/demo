@@ -67,15 +67,15 @@
 			var manager = new THREE.LoadingManager();
 
 			manager.onLoad = function(x){
-				console.log( "on load:", x );
+				console.log( "on manager load:", x );
 			};
 
 			manager.onProgress = function(url, loaded, total){
-				console.log( "on progress:", loaded, "of", total, "files loaded:", url );
+				console.log( "on manager progress:", loaded, "of", total, "files loaded:", url );
 			};
 
 			manager.onError = function(err){
-				console.error( err );
+				console.error( "on manager error:", err );
 			};
 
 			console.log( "manager:", manager );
