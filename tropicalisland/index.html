@@ -64,14 +64,15 @@
 
 			bootboxLoading();
 
+		/*
 			var manager = new THREE.LoadingManager();
 
 			manager.onLoad = function(x){
 				console.log( "on load:", x );
 			};
 
-			manager.onProgress = function(file, index, total, x, y, z){
-				console.log( "on progress:", "loading file", file, index, "of", total, "- x:", x, "- y:", y, "- z:", z );
+			manager.onProgress = function(file, index, total){
+				console.log( "loading file", file, index, "of", total );
 			};
 
 			manager.onError = function(err){
@@ -79,8 +80,9 @@
 			};
 
 			console.log( "manager:", manager );
+		*/
 
-			var loader = new THREE.XHRLoader( manager );
+			var loader = new THREE.XHRLoader();
 			loader.load( "app.json", function ( text ) {
 
 				var json = JSON.parse( text );
@@ -113,6 +115,12 @@
 
                 bootbox.hideAll();
 
+			}, function( file, index, total ){
+			
+				console.log( "loading", file, "file", index, "of", total );
+
+			}, function(err){
+				console.error(err);
 			});
 
 			function bootboxLoading(){
