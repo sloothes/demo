@@ -66,16 +66,16 @@
 
 			var manager = new THREE.LoadingManager();
 
-			manager.onLoad = function(x){
-				console.log( "on manager load:", x );
+			manager.onLoad = function(){
+				console.log( "[manager]", "Loading completed." );
 			};
 
 			manager.onProgress = function(url, loaded, total){
-				console.log( "on manager progress:", loaded, "of", total, "files loaded:", url );
+				console.log( "[manager]", loaded, "of", total, "files loaded:", url );
 			};
 
 			manager.onError = function(err){
-				console.error( "on manager error:", err );
+				console.error( "[manager]", err );
 			};
 
 			console.log( "manager:", manager );
@@ -121,6 +121,7 @@
 					console.log( "on progress:", loaded.toFixed(2), "KB of", total.toFixed(2), "MB loaded." );
 				} else {
 					var loaded = e.loaded / 1024;
+					$("#loaded").text( loaded.toFixed(0) + "KB");
 					console.log( "on progress:", loaded.toFixed(2), "Kb loaded." );
 				}
 
@@ -135,8 +136,8 @@
 				var dialog = window.bootbox.dialog({
 					message: "<div class=\"text-center\">"
 					+ "<h2 style=\"width:fit-content;font-weight:bold;"
-					+ "color:#fff;text-align:center;\">Loading<br>"
-					+ "Please wait...<br>(heavy duty)</h2></div>",
+					+ "color:#fff;text-align:center;\">Please wait...<br>"
+					+ "Loading... <span id=\"loaded\"></span><br>(heavy duty)</h2></div>",
 					buttons: false,
 					closeButton: false,
 					className: "middle",
