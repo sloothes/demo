@@ -81,6 +81,7 @@
 			manager.onError = function(err){
 				bootbox.hideAll();
 				console.error( "[manager]", err );
+				bootboxError();
 			};
 
 			console.log( "manager:", manager );
@@ -146,6 +147,7 @@
 			}, function onError(err){
 				bootbox.hideAll();
 				console.error(err);
+				bootboxError();
 			});
 
 			function bootboxLoading(){
@@ -173,19 +175,22 @@
 			function bootboxError(){
 
 				var dialog = window.bootbox.dialog({
+					title:"<h2>Loading Error</h2>",
 					message: "<div class=\"text-center\">"
-					+ "<h2 style=\"width:fit-content;font-weight:bold;"
+					+ "<h4 style=\"width:fit-content;font-weight:bold;"
 					+ "color:#fff;text-align:center;\">Sorry! An error occurred.<br>"
-					+ "Please reload the page (press F5 key) and try again.</h2></div>",
-					buttons: false,
+					+ "Please reload the page (or press F5 key)<br>and try again.</h4></div>",
 					closeButton: false,
 					className: "middle",
-				});
-
-				$( dialog.modal() ).find(".modal-content").css({
-                    "border"    : "none",
-                    "box-shadow": "none",
-                    "background": "none",
+					buttons: {
+						reload: {
+							label: "Reload",
+							className: "btn btn-primary",
+							callback: function(){
+								window.location.reload();
+							}
+						}
+					},
 				});
 
 			}
