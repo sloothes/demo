@@ -120,12 +120,20 @@
 			}, function onProgress( e ){
 			
 				if ( e.lengthComputable && e.total > 0 ) {
+
 					var loaded = e.loaded / 1024; // (KB)
 					var total  = e.total / Math.pow(1024, 2); // (MB)
+
+					var percent = e.loaded * 100 / e.total;
+					$("#loaded").text( loaded.toFixed(0) + "%");
+
 					console.log( "on progress:", loaded.toFixed(2), "KB of", total.toFixed(2), "MB loaded." );
+
 				} else {
+
 					var loaded = e.loaded / 1024;
 					$("#loaded").text( loaded.toFixed(0) + " KB");
+
 					console.log( "on progress:", loaded.toFixed(2), "Kb loaded." );
 				}
 
