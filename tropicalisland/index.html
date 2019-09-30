@@ -71,7 +71,7 @@
 				console.log( "[manager]", "Loading completed." );
 				setTimeout(function(){
 					bootbox.hideAll();
-				}, 1000);
+				}, 2000);
 			};
 
 			manager.onProgress = function(url, loaded, total){
@@ -79,6 +79,7 @@
 			};
 
 			manager.onError = function(err){
+				bootbox.hideAll();
 				console.error( "[manager]", err );
 			};
 
@@ -143,6 +144,7 @@
 				}
 
 			}, function onError(err){
+				bootbox.hideAll();
 				console.error(err);
 			});
 
@@ -168,6 +170,25 @@
 
 			}
 
+			function bootboxError(){
+
+				var dialog = window.bootbox.dialog({
+					message: "<div class=\"text-center\">"
+					+ "<h2 style=\"width:fit-content;font-weight:bold;"
+					+ "color:#fff;text-align:center;\">Sorry! An error occurred.<br>"
+					+ "Please reload the page (press F5 key) and try again.</h2></div>",
+					buttons: false,
+					closeButton: false,
+					className: "middle",
+				});
+
+				$( dialog.modal() ).find(".modal-content").css({
+                    "border"    : "none",
+                    "box-shadow": "none",
+                    "background": "none",
+				});
+
+			}
 		</script>
 	</body>
 </html>
