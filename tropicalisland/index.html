@@ -67,7 +67,11 @@
 			var manager = new THREE.LoadingManager();
 
 			manager.onLoad = function(){
+				$("#loaded").text( "completed" );
 				console.log( "[manager]", "Loading completed." );
+				setTimeout(function(){
+					bootbox.hideAll();
+				}, 1000);
 			};
 
 			manager.onProgress = function(url, loaded, total){
@@ -111,7 +115,7 @@
 					player.setSize( window.innerWidth, window.innerHeight );
 				});
 
-                bootbox.hideAll();
+            //  bootbox.hideAll();
 
 			}, function onProgress( e ){
 			
